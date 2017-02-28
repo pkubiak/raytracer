@@ -10,6 +10,7 @@ namespace rt {
     auto width = img.width();
     auto height = img.height();
 
+    #pragma omp parallel for
     for(auto y = 0; y < height; y++)
       for(auto x = 0; x < width; x++)
         img(x, y) = func(x, y, width, height);
