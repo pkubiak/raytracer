@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="core">
+      <UniqueIdentifier>{6e67db56-978e-4691-95bc-5c4ec0fd4979}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rt">
+      <UniqueIdentifier>{e11aa719-a804-453c-a456-c61b9e59597b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rt\cameras">
+      <UniqueIdentifier>{7cf81580-5b71-41fe-96aa-4a60ca52868c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rt\coordmappers">
+      <UniqueIdentifier>{e1a903c6-7261-4227-9f70-9d78c916553b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rt\groups">
+      <UniqueIdentifier>{3503ba62-3b75-4b24-9e05-27549525d7eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rt\integrators">
+      <UniqueIdentifier>{b85f3c38-d20a-4ec6-b113-a8a65af9d177}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rt\lights">
+      <UniqueIdentifier>{b99f2d4c-66e5-4ad8-9263-74b8f44aa581}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rt\loaders">
+      <UniqueIdentifier>{18ae6172-21d2-48fe-ac1f-3125e4c7a457}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rt\materials">
+      <UniqueIdentifier>{671f900e-798d-4135-b516-9d3623677259}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rt\primmod">
+      <UniqueIdentifier>{c11da606-def2-409a-ad8f-b07bd19a0940}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rt\solids">
+      <UniqueIdentifier>{6986fa57-21ae-495b-8d87-6f4f1288847f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rt\textures">
+      <UniqueIdentifier>{ee8332bc-b4a0-407c-953b-3056212ae2ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="main">
+      <UniqueIdentifier>{16b50182-f191-4cca-a3ca-c3646faa49aa}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\core\assert.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\color.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\image.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\julia.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\macros.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\point.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\scalar.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\vector.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\rt\renderer.h">
+      <Filter>rt</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\core\image.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\julia.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\scalar.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\main\a_julia.cpp">
+      <Filter>main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\main\main.cpp">
+      <Filter>main</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
