@@ -1,14 +1,16 @@
-#ifndef CG1RAYTRACER_CAMERAS_PERSPECTIVE_HEADER
-#define CG1RAYTRACER_CAMERAS_PERSPECTIVE_HEADER
+#pragma once
 
 #include <rt/cameras/camera.h>
 #include <core/vector.h>
 #include <core/point.h>
 
 namespace rt {
+  class PerspectiveCamera : public Camera {
+    public:
+    Point center;
+    Vector forward, up;
+    float horizonalOpeningAngle, verticalOpeningAngle;
 
-class PerspectiveCamera : public Camera {
-public:
     PerspectiveCamera(
         const Point& center,
         const Vector& forward,
@@ -18,9 +20,8 @@ public:
         );
 
     virtual Ray getPrimaryRay(float x, float y) const;
-};
 
+  private:
+    Vector fx, fy;
+  };
 }
-
-
-#endif

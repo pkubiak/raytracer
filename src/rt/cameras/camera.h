@@ -1,16 +1,10 @@
-#ifndef CG1RAYTRACER_CAMERAS_CAMERA_HEADER
-#define CG1RAYTRACER_CAMERAS_CAMERA_HEADER
+#pragma once
+#include "../ray.h"
 
 namespace rt {
 
-class Ray;
-
-class Camera {
-public:
-    virtual Ray getPrimaryRay(float x, float y) const = 0;
-};
-
+  class Camera {
+  public:
+      virtual Ray getPrimaryRay(float x, float y) const = 0;
+  };
 }
-
-#endif
-

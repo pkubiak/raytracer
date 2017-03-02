@@ -8,16 +8,25 @@
 namespace rt {
 
 class OrthographicCamera : public Camera {
-public:
+  private:
+    Vector fx, fy;
+
+  public:
+    Point center;
+    Vector forward, up;
+    float scaleX, scaleY;
+    
     OrthographicCamera(
         const Point& center,
         const Vector& forward,
         const Vector& up,
         float scaleX,
         float scaleY
-        );
+      );
 
     virtual Ray getPrimaryRay(float x, float y) const;
+
+
 };
 
 }
