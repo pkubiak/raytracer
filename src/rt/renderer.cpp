@@ -21,8 +21,6 @@ namespace rt {
         Ray ray = camera->getPrimaryRay(px, py);
         Vector& dir = ray.direction;
         img(x, y) = (RGBColor(dir.x, dir.y, dir.z).clamp());
-        //printf("%d %d, %f %f\n", x, y, px, py);
-        //printf("%f %f %f %f\n", dir.x, dir.y, dir.z, dir.length());
       }
   }
 

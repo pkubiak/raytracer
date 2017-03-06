@@ -1,4 +1,6 @@
-#pragma once
+#ifndef CG1RAYTRACER_CAMERAS_CAMERA_HEADER
+#define CG1RAYTRACER_CAMERAS_CAMERA_HEADER
+
 #include "../ray.h"
 
 namespace rt {
@@ -8,3 +10,6 @@ namespace rt {
       virtual Ray getPrimaryRay(float x, float y) const = 0;
   };
 }
+
+#endif
+

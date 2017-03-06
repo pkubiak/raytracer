@@ -16,7 +16,6 @@ namespace rt {
 
     // utworz wektory wodzące pola widzenia
     fx = cross(forward, up).normalize();
-    
     fx = fx * (tan(0.5*horizonalOpeningAngle)*forward.length());
 
     fy = -(cross(forward, fx).normalize());
