@@ -9,13 +9,13 @@ namespace rt {
 
 class OrthographicCamera : public Camera {
   private:
-    Vector fx, fy;
+    Vector sx, sy;
 
   public:
     Point center;
     Vector forward, up;
     float scaleX, scaleY;
-    
+
     OrthographicCamera(
         const Point& center,
         const Vector& forward,

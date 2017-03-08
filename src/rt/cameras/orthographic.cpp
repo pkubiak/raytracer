@@ -7,16 +7,18 @@ namespace rt {
       const Vector& up,
       float scaleX,
       float scaleY
-    ): center(center), forward(forward), up(up), scaleX(scaleX), scaleY(scaleY) {
-    fx = cross(forward, up).normalize();
+    ): center(center), scaleX(scaleX), scaleY(scaleY) {
+    this->forward = forward.normalize();
+    this->up = up.normalize();
 
-    fx = fx * (scaleX * forward.length());
+    sx = cross(this->forward, this->up).normalize();
+    sx = sx * (0.5 * scaleX * this->forward.length());
 
-    fy = -(cross(forward, fx).normalize());
-    fy = fy * (scaleY * forward.length());
+    sy = -(cross(this->forward, sx).normalize());
+    sy = sy * (0.5 * scaleY * this->forward.length());
   }
 
   Ray OrthographicCamera::getPrimaryRay(float x, float y) const{
-    return Ray(center + x*fx + y*fy, forward);
+    return Ray(center + x*sx + y*sy, forward);
   }
 }
