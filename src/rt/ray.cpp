@@ -2,12 +2,11 @@
 #include<cstdio>
 
 namespace rt {
-  Ray::Ray(const Point& o, const Vector& d): origin(o) {
-    this->direction = d.normalize();
-    // printf("%f\n", this->direction.length());
+  Ray::Ray(const Point& o, const Vector& d): o(o) {
+    this->d = d.normalize();
   }
 
   Point Ray::getPoint(float distance) const {
-    return origin + (distance * direction);
+    return o + (distance * d);
   }
 }

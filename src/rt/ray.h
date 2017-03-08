@@ -8,8 +8,8 @@ namespace rt {
 
 class Ray {
 public:
-    Point origin;
-    Vector direction;
+    Point o;
+    Vector d;
 
     Ray() {}
     Ray(const Point& o, const Vector& d);
