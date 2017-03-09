@@ -7,8 +7,13 @@
 namespace rt {
 
 class Disc : public Solid {
+private:
+  const Point& center;
+  const Vector& normal;
+  float radius;
+
 public:
-    Disc() {}
+    // Disc(): center(Point()), normal(Vector()), radius(0) {}
     Disc(const Point& center, const Vector& normal, float radius, CoordMapper* texMapper, Material* material);
 
     virtual BBox getBounds() const;

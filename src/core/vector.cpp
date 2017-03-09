@@ -4,7 +4,7 @@
 #include "point.h"
 
 namespace rt {
-  Vector::Vector(float x, float y, float z): x(x), y(y), z(z) {}
+  Vector::Vector(float _x, float _y, float _z): x(_x), y(_y), z(_z) {}
 
   Vector::Vector(const Float4& f4) {
     NOT_IMPLEMENTED;
@@ -99,6 +99,13 @@ namespace rt {
 
   Point operator*(const Float4& scale, const Point& p) {
     NOT_IMPLEMENTED;
+  }
+
+  float Vector::operator()(int p) const{
+    if(p == 0)return x;
+    if(p == 1)return y;
+    if(p == 2)return z;
+    UNREACHABLE;
   }
 
 }

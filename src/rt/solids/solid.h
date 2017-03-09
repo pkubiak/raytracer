@@ -15,8 +15,9 @@ class Solid : public Primitive {
 public:
     Material* material;
     CoordMapper* texMapper;
+    
     explicit Solid(CoordMapper* texMapper = nullptr, Material* material = nullptr);
-	virtual Point sample() const = 0;
+    virtual Point sample() const = 0;
     virtual float getArea() const = 0;
     virtual void setMaterial(Material* m) { material = m; }
     virtual void setCoordMapper(CoordMapper* cm) { texMapper = cm; }

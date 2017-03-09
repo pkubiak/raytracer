@@ -10,7 +10,7 @@ namespace rt {
     public:
     Point center;
     Vector forward, up;
-    float horizonalOpeningAngle, verticalOpeningAngle;
+    float verticalOpeningAngle, horizonalOpeningAngle;
 
     PerspectiveCamera(
         const Point& center,

@@ -10,14 +10,17 @@ namespace rt {
 class Solid;
 
 class Intersection {
-public:
-    Ray ray;
-    const Solid* solid;
+  public:
     float distance;
+    Ray ray;
+    //Solid* solid;
+    const Solid* solid;
+    Vector _normal;
 
     Intersection() {}
     static Intersection failure();
     Intersection(float distance, const Ray& ray, const Solid* solid, const Vector& normal, const Point& uv);
+    // Intersection(Intersection&);
 
     Point hitPoint() const;
     Vector normal() const;

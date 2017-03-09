@@ -2,7 +2,7 @@ CC=g++
 LD=g++
 CCFLAGS=-Isrc -c -std=c++11
 LDFLAGS=-lpng
-debug : CCFLAGS += -g
+debug : CCFLAGS += -g -Wall -Wextra -Wno-unused-parameter -Wno-unknown-pragmas -Wno-sign-compare
 release : CCFLAGS += -O3 -DNDEBUG -fopenmp
 release : LDFLAGS += -O3 -fopenmp
 SRC_DIR:=src

@@ -2,9 +2,10 @@
 #include "../core/image.h"
 #include "../core/assert.h"
 #include "ray.h"
+#include "integrators/integrator.h"
 
 namespace rt {
-  Renderer::Renderer(Camera* cam, Integrator* integrator): camera(cam) {
+  Renderer::Renderer(Camera* cam, Integrator* integrator): camera(cam), integrator(integrator) {
     //printf("fx: %f %f %f")
   }
 
@@ -19,8 +20,7 @@ namespace rt {
       for(auto x = 0; x < width; x++){
         float px = 2.0*(float)x/(width-1) - 1.0, py = -(2.0*(float)y/(height-1) - 1.0);
         Ray ray = camera->getPrimaryRay(px, py);
-        Vector& dir = ray.d;
-        img(x, y) = RGBColor(dir.x, dir.y, dir.z).clamp();
+        img(x,y) = integrator->getRadiance(ray);
       }
   }
 

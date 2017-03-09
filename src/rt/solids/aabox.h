@@ -7,8 +7,14 @@
 namespace rt {
 
 class AABox : public Solid {
+private:
+  Point min;
+  Point max;
+
 public:
-    AABox() {}
+    AABox() {
+      min = Point(); max = Point();
+    }
     AABox(const Point& corner1, const Point& corner2, CoordMapper* texMapper, Material* material);
 
     virtual BBox getBounds() const;

@@ -7,6 +7,9 @@
 namespace rt {
 
 class SimpleGroup : public Group {
+private:
+    std::vector<Primitive*> primitives;
+
 public:
     virtual BBox getBounds() const;
     virtual Intersection intersect(const Ray& ray, float previousBestDistance=FLT_MAX) const;

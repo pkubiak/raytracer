@@ -13,7 +13,8 @@ class RGBColor;
 class Renderer {
 public:
     Camera* camera;
-
+    Integrator* integrator;
+    
     Renderer(Camera* cam, Integrator* integrator);
     void setSamples(uint samples);
     void render(Image& img);

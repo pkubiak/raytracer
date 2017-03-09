@@ -7,14 +7,14 @@
 
 namespace rt {
 
-class Ray;
+  class Ray;
 
-class BBox {
-public:
+  class BBox {
+  public:
     Point min, max;
 
     BBox() {}
-    BBox(const Point& min, const Point& max) : min(min), max(max) {}
+    BBox(const Point& _min, const Point& _max) : min(rt::min(_min, _max)), max(rt::max(_min, _max)){}
     static BBox empty();
     static BBox full();
 
@@ -26,7 +26,8 @@ public:
     std::pair<float,float> intersect(const Ray& ray) const;
 
     bool isUnbound();
-};
+    bool isEmpty() const;
+  };
 
 }
 

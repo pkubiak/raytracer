@@ -3,7 +3,7 @@
 #include "vector.h"
 
 namespace rt {
-  Point::Point(float x, float y, float z): x(x), y(y), z(z) {}
+  Point::Point(float _x, float _y, float _z): x(_x), y(_y), z(_z) {}
 
   Point::Point(const Float4& f4) {
     NOT_IMPLEMENTED;
@@ -46,5 +46,12 @@ namespace rt {
       a.y > b.y ? a.y : b.y,
       a.z > b.z ? a.z : b.z
     );
+  }
+
+  float Point::operator()(int p) const{
+    if(p == 0)return x;
+    if(p == 1)return y;
+    if(p == 2)return z;
+    UNREACHABLE;
   }
 }
