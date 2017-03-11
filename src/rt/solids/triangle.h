@@ -11,9 +11,9 @@ namespace rt {
 
 class Triangle : public Solid {
 private:
-  const Point& v1;
-  const Point& v2;
-  const Point& v3;
+  Point v1;
+  Point v2;
+  Point v3;
   Vector normal;
 
 public:

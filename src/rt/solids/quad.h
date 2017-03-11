@@ -10,12 +10,12 @@ namespace rt {
 
 class Quad : public Solid {
 private:
-  const Point& v1;
-  Point v2,v3,v4;
-  const Vector& span1;
-  const Vector& span2;
+  Point v1;
+  Vector span1;
+  Vector span2;
   // Vector normal;
   Triangle *tr1, *tr2;
+  BBox boundingBox;
 
 public:
     // Quad() {}

@@ -10,9 +10,9 @@ namespace rt {
     return res;
   }
 
-  Intersection::Intersection(float distance, const Ray& ray, const Solid* solid, const Vector& normal, const Point& uv):
-    distance(distance), ray(ray), solid(solid), _normal(normal) {
-      _normal = _normal.normalize();
+  Intersection::Intersection(float _distance, const Ray& _ray, const Solid* _solid, const Vector& _normal, const Point& _uv):
+    distance(_distance), ray(_ray), solid(_solid), uv(_uv) {
+      normalv = _normal.normalize();
     }
 
   // Intersection::Intersection(Intersection& other): distance(other.distance), ray(other.ray), solid(other.solid), _normal(other._normal){ }
@@ -22,11 +22,11 @@ namespace rt {
   }
 
   Vector Intersection::normal() const {
-    return _normal;
+    return normalv;
   }
 
   Point Intersection::local() const {
-    NOT_IMPLEMENTED;
+    return uv;
   }
 
   Intersection::operator bool(){

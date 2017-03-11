@@ -13,30 +13,32 @@ namespace rt {
   }
 
   BBox Triangle::getBounds() const {
-    NOT_IMPLEMENTED;
+    BBox boundingBox = BBox::empty();
+    boundingBox.extend(v1);
+    boundingBox.extend(v2);
+    boundingBox.extend(v3);
+    return boundingBox;
   }
 
   Intersection Triangle::intersect(const Ray& ray, float previousBestDistance) const {
     // compute t for plane containing triangle v1,v2,v3
-    float t = dot(normal, v1-ray.o)/dot(ray.d, normal);
+    float t0 = dot(normal, v1-ray.o)/dot(ray.d, normal);
 
-    if(t < 0 || t > previousBestDistance)
+    if(t0 < 0 || t0 > previousBestDistance)
       return Intersection::failure();
 
     // compute barycentric coordinates
-    Point p = ray.o + t*ray.d;
-    float S = cross(v2-v1, v3-v1).length();
-    float S1 = cross(v2-p, v3-p).length();
-    float S2 = cross(v1-p, v3-p).length();
-    float S3 = cross(v1-p, v2-p).length();
+    Vector u(v2-v1), v(v3-v1), w((ray.o + t0*ray.d)-v1);
+    float uv = dot(u,v), wv = dot(w,v), vv = dot(v,v), wu = dot(w,u), uu = dot(u,u);
 
-    // printf("%f,%f,%f\n", S1/S,S2/S,S3/S);
-    //TODO: better condition
-    if(S1+S2+S3>S+0.00001)
+    float s = (uv*wv-vv*wu)/(uv*uv-uu*vv);
+    float t = (uv*wu-uu*wv)/(uv*uv-uu*vv);
+
+
+    if(s<0.0 || t < 0.0 || s+t > 1.0)
       return Intersection::failure();
-    if(dot(normal, ray.d)>0.0)
-      return Intersection(t, ray, this, -normal, Point(S1/S,S2/S,S3/S));
-    return Intersection(t, ray, this, normal, Point(S1/S,S2/S,S3/S));
+
+    return Intersection(t0, ray, this, normal, Point(1-s-t,s,t));
   }
 
   Point Triangle::sample() const {

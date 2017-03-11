@@ -15,7 +15,8 @@ class Intersection {
     Ray ray;
     //Solid* solid;
     const Solid* solid;
-    Vector _normal;
+    Vector normalv;
+    Point uv;
 
     Intersection() {}
     static Intersection failure();
