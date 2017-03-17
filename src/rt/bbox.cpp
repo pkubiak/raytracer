@@ -8,8 +8,13 @@
 #include<cstdio>
 
 namespace rt {
+  // class BBox;
+
   BBox BBox::empty(){
-    return BBox(Point(INFINITY,INFINITY,INFINITY), Point(-INFINITY,-INFINITY,-INFINITY));
+    BBox box;
+    box.min = Point(INFINITY,INFINITY,INFINITY);
+    box.max = Point(-INFINITY,-INFINITY,-INFINITY);
+    return box;
   }
 
   BBox BBox::full(){
@@ -17,19 +22,19 @@ namespace rt {
   }
 
   void BBox::extend(const Point& point) {
-    this->min = rt::min(point, this->min);
-    this->max = rt::max(point, this->max);
+    min = rt::min(point, min);
+    max = rt::max(point, max);
   }
 
   bool BBox::isEmpty() const {
-    return true;
-
+    return min.x > max.x;
   }
+
   void BBox::extend(const BBox& bbox){
-    if(!bbox.isEmpty()){
-      this->extend(bbox.min);
-      this->extend(bbox.max);
-    }
+    this->min = rt::min(bbox.min, this->min);
+    this->max = rt::max(bbox.max, this->max);
+    // this->extend(bbox.min);
+    // this->extend(bbox.max);
   }
 
   std::pair<float,float> BBox::intersect(const Ray& ray) const {
@@ -55,5 +60,9 @@ namespace rt {
       if(min(i)==-INFINITY||max(i)==INFINITY)
         return true;
     return false;
+  }
+
+  bool BBox::contains(Point& p) const {
+    return min.x<=p.x&&p.x<=max.x&&min.y<=p.y&&p.y<=max.y&&min.z<=p.z&&p.z<=max.z;
   }
 }

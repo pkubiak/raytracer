@@ -3,10 +3,11 @@
 
 #include <rt/solids/solid.h>
 #include <core/point.h>
-
+#include "../bbox.h"
 namespace rt {
 
 class Sphere : public Solid {
+  BBox box;
 public:
     Point center;
     float radius;

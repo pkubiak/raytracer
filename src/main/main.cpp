@@ -17,13 +17,22 @@ int main() {
     Image img(800, 600);
 
     KDTree* scene = new KDTree();
+
     scene->add(new Sphere(Point(2.5f,  .5f,  -1), 0.5  , nullptr, nullptr));
     scene->add(new Sphere(Point(2.5f,  -1.f,  -1), 0.5, nullptr, nullptr));
     scene->add(new Sphere(Point(4.5f,  .5f,  -1), 0.5 , nullptr, nullptr));
 
     loadOBJ(scene, "models/", "cow.obj");
-  
+
   	scene->rebuildIndex();
+    // printf("Sizeof: %d\n", sizeof(KDTreeNode));
+    // printf("nodes:%d leaves:%d primitives:%d\n", scene->nodes.size(), scene->leaves.size(),scene->primitives.size());
+    // int suma = 0;
+    // for(auto x: scene->leaves){
+    //   // printf(">%d\n",x->size());
+    //   suma+=x->size();
+    // }
+    // printf("SUMA: %d\n", suma);
     World world;
     world.scene = scene;
 

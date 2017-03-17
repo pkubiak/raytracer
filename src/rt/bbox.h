@@ -27,6 +27,8 @@ namespace rt {
 
     bool isUnbound();
     bool isEmpty() const;
+
+    bool contains(Point&) const;
   };
 
 }

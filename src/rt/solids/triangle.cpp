@@ -3,21 +3,23 @@
 
 namespace rt {
   Triangle::Triangle(Point vertices[3], CoordMapper* _texMapper, Material* _material):
-    Solid(_texMapper, _material), v1(vertices[0]), v2(vertices[1]), v3(vertices[2]) {
+    Solid(_texMapper, _material), v1(vertices[0]), v2(vertices[1]), v3(vertices[2]), box(BBox::empty()) {
     normal = cross(v2-v1, v3-v1).normalize();
+    box.extend(v1);
+    box.extend(v2);
+    box.extend(v3);
   }
 
   Triangle::Triangle(const Point& _v1, const Point& _v2, const Point& _v3, CoordMapper* _texMapper, Material* _material):
-    Solid(_texMapper, _material), v1(_v1), v2(_v2), v3(_v3){
+    Solid(_texMapper, _material), v1(_v1), v2(_v2), v3(_v3), box(BBox::empty()){
     normal = cross(v2-v1, v3-v1).normalize();
+    box.extend(v1);
+    box.extend(v2);
+    box.extend(v3);
   }
 
   BBox Triangle::getBounds() const {
-    BBox boundingBox = BBox::empty();
-    boundingBox.extend(v1);
-    boundingBox.extend(v2);
-    boundingBox.extend(v3);
-    return boundingBox;
+    return box;
   }
 
   Intersection Triangle::intersect(const Ray& ray, float previousBestDistance) const {
