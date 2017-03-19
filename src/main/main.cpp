@@ -22,7 +22,7 @@ int main() {
     scene->add(new Sphere(Point(2.5f,  -1.f,  -1), 0.5, nullptr, nullptr));
     scene->add(new Sphere(Point(4.5f,  .5f,  -1), 0.5 , nullptr, nullptr));
 
-    loadOBJ(scene, "models/", "cow.obj");
+    loadOBJ(scene, "models/", "dude.obj");
 
   	scene->rebuildIndex();
     // printf("Sizeof: %d\n", sizeof(KDTreeNode));
@@ -36,16 +36,16 @@ int main() {
     World world;
     world.scene = scene;
 
-    PerspectiveCamera cam1(Point(-8.85f, -7.85f, 7.0f), Vector(1.0f,1.0f,-0.6f), Vector(0, 0, 1), pi/8, pi/6);
-    PerspectiveCamera cam2(Point(16.065f, -12.506f, 1.771f), Point(-0.286f, -0.107f, 1.35f)-Point(16.065f, -12.506f, 1.771f), Vector(0, 0, 1), pi/8, pi/6);
+    PerspectiveCamera cam1(Point(-5.85f, 7.85f, 7.0f), Vector(1.0f,-1.0f,-1.0f), Vector(0, 1, 0), pi/8, pi/6);
+    // PerspectiveCamera cam2(Point(16.065f, -12.506f, 1.771f), Point(-0.286f, -0.107f, 1.35f)-Point(16.065f, -12.506f, 1.771f), Vector(0, 0, 1), pi/8, pi/6);
     RayCastingIntegrator integrator(&world);
 
     Renderer engine1(&cam1, &integrator);
     engine1.render(img);
     img.writePNG("a4-1.png");
-
-    Renderer engine2(&cam2, &integrator);
-    engine2.render(img);
-    img.writePNG("a4-2.png");
+    //
+    // Renderer engine2(&cam2, &integrator);
+    // engine2.render(img);
+    // img.writePNG("a4-2.png");
     return 0;
 }
