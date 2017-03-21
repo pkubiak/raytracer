@@ -21,7 +21,7 @@ using std::chrono::duration_cast;
 using namespace rt;
 
 int main() {
-    Image img(800, 600);
+    Image img(1920, 1280);
 
     auto start = system_clock::now();
     KDTree* scene = new KDTree();
@@ -30,9 +30,9 @@ int main() {
     // scene->add(new Sphere(Point(2.5f,  -1.f,  -1), 0.5, nullptr, nullptr));
     // scene->add(new Sphere(Point(4.5f,  .5f,  -1), 0.5 , nullptr, nullptr));
 
-    for(int x = -5;x<=5;x+=2)
-      for(int z=-5;z<=5;z+=2)
-        loadOBJ(scene, "models/", "dude.obj", nullptr, Vector(x,0,z));
+    for(int x = -4;x<=4;x++)
+      for(int z=-4;z<=4;z++)
+        loadOBJ(scene, "models/", "dude.obj", nullptr, Vector(2*x,0,2*z));
 
     auto stop = system_clock::now();
     printf("loadScene time: %f\n", (float)duration_cast<nanoseconds>(stop - start).count()/1000000000.0);
@@ -60,20 +60,27 @@ int main() {
 
     // Moving camera
     MovingPerspectiveCamera cam3(
-      [](float t)->Point{return Point(14*cos(t), 14.0, 14*sin(t));},
-      [](float t)->Point{return Point(-4.0*cos(t), 0.0, -4.0*sin(t));},
-      [](float t)->Vector{return Vector(0,1,0);},
+      [](float t)->Point{return Point(18*cos(t), 15.0, 18*sin(t));},
+      [](float t)->Point{return Point(1.0*cos(t), 0.0, 1.0*sin(t));},
+      [](float t)->Vector{return Vector(sin(t),cos(t),0);},
       pi/8, pi/6);
 
     Renderer engine3(&cam3, &integrator);
     char filename[20];
-    for(float t=0.0; t<6.28; t+= 0.01){
+    int frames = (int)(6.28/0.005);
+
+    auto start3 = system_clock::now();
+    for(int i=0;i<frames;i++){
+      float t = 6.28*i/frames;
       printf("Rendering: %f\n", t);
       cam3.setTime(t);
       engine3.render(img);
-      sprintf(filename, "./cam3_%.3f.png", t);
+      sprintf(filename, "./cam3_%.4d.png", i);
       img.writePNG(filename);
     }
+    auto stop3 = system_clock::now();
+    printf("render time: %f\n", (float)duration_cast<nanoseconds>(stop3 - start3).count()/1000000000.0);
+    printf("render time per frame: %f\n", (float)duration_cast<nanoseconds>(stop3 - start3).count()/1000000000.0/frames);
 
     // Renderer engine2(&cam2, &integrator);
     // engine2.render(img);
