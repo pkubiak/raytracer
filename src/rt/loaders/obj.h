@@ -3,6 +3,8 @@
 
 #include <string>
 #include <map>
+#include <core/vector.h>
+
 namespace rt {
 class Group;
 class Material;
