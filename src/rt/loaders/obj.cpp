@@ -253,7 +253,7 @@ Int3 FileLine::fetchVertex() {
 }
 
 
-void loadOBJ( Group* dest, const std::string& path, const std::string& filename, MatLib* inmats) {
+void loadOBJ( Group* dest, const std::string& path, const std::string& filename, MatLib* inmats, Vector translation) {
     MatLib* matlib;
     if (inmats)
         matlib = inmats;
@@ -364,7 +364,7 @@ void loadOBJ( Group* dest, const std::string& path, const std::string& filename,
                             mapper, material);
                     }
 #else
-                    t = new Triangle(Point(vertices[v[0].vidx]), Point(vertices[v[1].vidx]), Point(vertices[v[2].vidx]), mapper, material);
+                    t = new Triangle(Point(vertices[v[0].vidx])+translation, Point(vertices[v[1].vidx])+translation, Point(vertices[v[2].vidx])+translation, mapper, material);
 #endif
                     dest->add(t);
 
@@ -398,7 +398,7 @@ void loadOBJ( Group* dest, const std::string& path, const std::string& filename,
                 break;
             }
             case Obj_None: break; //empty line
-            case Obj_Invalid: 
+            case Obj_Invalid:
                 release_assert(false) << "Error in file " << fileline.filename << ":" << fileline.lineIdx << "." << fileline.pos << " : Vertex index cannot be 0";
             default:
                 if (unsupportedEncounters.insert(i).second) //element inserted (was not there previously)
@@ -412,4 +412,3 @@ void loadOBJ( Group* dest, const std::string& path, const std::string& filename,
 }
 
 }
-

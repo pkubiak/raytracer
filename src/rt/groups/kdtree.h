@@ -19,7 +19,7 @@ namespace rt {
     float split;
 
     KDTreeNode();
-    ~KDTreeNode();
+    ~KDTreeNode() {};
     bool is_leaf() const;
     // BBox getBounds() const;
   };

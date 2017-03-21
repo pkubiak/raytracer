@@ -9,7 +9,7 @@ class Material;
 
 typedef std::map<std::string, Material*> MatLib;
 
-void loadOBJ(Group* dest, const std::string& path, const std::string& filename, MatLib* inmats=nullptr);
+void loadOBJ(Group* dest, const std::string& path, const std::string& filename, MatLib* inmats=nullptr, Vector = Vector(0,0,0));
 void loadOBJMat(MatLib* dest, const std::string& path, const std::string& filename);
 
 }
