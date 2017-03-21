@@ -8,6 +8,7 @@
 #include <string>
 #include <fstream>
 #include <rt/solids/triangle.h>
+#include <core/vector.h>
 #include <set>
 
 #ifndef DISABLE_COORDMAPPERS
