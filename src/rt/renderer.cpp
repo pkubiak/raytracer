@@ -15,7 +15,7 @@ namespace rt {
 
     assert(width >= 2 && height >=2);
 
-    #pragma omp parallel for
+    // #pragma omp parallel for
     for(auto y = 0; y < height; y++){
       for(auto x = 0; x < width; x++){
         // if(x!=700||y!=400)continue;

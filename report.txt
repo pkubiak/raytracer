@@ -1,27 +1,58 @@
-Rendering report:
+ ____  _____ _   _ ____  _____ ____  ___ _   _  ____     ____  _____ ____   ___  ____ _____
+|  _ \| ____| \ | |  _ \| ____|  _ \|_ _| \ | |/ ___|   |  _ \| ____|  _ \ / _ \|  _ \_   _|
+| |_) |  _| |  \| | | | |  _| | |_) || ||  \| | |  _    | |_) |  _| | |_) | | | | |_) || |
+|  _ <| |___| |\  | |_| | |___|  _ < | || |\  | |_| |   |  _ <| |___|  __/| |_| |  _ < | |
+|_| \_\_____|_| \_|____/|_____|_| \_\___|_| \_|\____|   |_| \_\_____|_|    \___/|_| \_\|_|
 
-Model:
+Main Model:
   Brigand
   Face count: 15007
   url: http://opengameart.org/content/brigand
   licence: CC-BY 3.0
 
-Scene:
-  49 x model of Brigand
-  Primitives count: 1,917,184
+-----------------------------------------------------------
 
-Rendering time (Split in the middle):
+Static scene:
+  Scene:
+    81 x model of Brigand
+    Primitives count: 2,426,436
+    Resolution: 1920x1280
 
+  Rendering time (Split in the middle):
+    Total time:
 
-Rendering time (SAH):
-  Resolution: 1920x1280
-  Total time: 59.51s on 4 cores (92.68s total cpu time)
+    Loading scene: 1.84s
+    Building KDTree: 2.38s
+    Render time: 229.49s on 4 cores (774.89s total cpu time)
 
-  Loading scene: 1.44s
-  Building KDTree: 42.94s
-  Render time: 14.75s
+  Rendering time (SAH):
+    Total time: 72.82s on 4 cores (107.93s total cpu time)
 
+    Loading scene: 1.84s
+    Building KDTree: 55.26s
+    Render time: 15.33s
 
+  Rendering time (SAH) with one time sorting:
+    in progress
 
-In-gobald
-nlogn time KDTree
+-----------------------------------------------------------
+
+Video scene
+  url: https://youtu.be/A7bSuBYB84g
+
+  Scene:
+    81 x model of Brigand
+    Moving Perspective Camera
+    2426436 primitives
+
+  Rendering time (SAH):
+    Resolution: 1920x1280, 1256 frames
+    Output: 204MB, MP4
+
+    Total time: 88m54.36s on ~30 cores (1855m33.06s total cpu time) -> 20x speedup,
+      renderer splits into parallel on rendering single frame.
+
+    Loading scene: 4.05s
+    Building KDTree: 111.19s
+    Render time: 5218.92s
+    Render time per frame: 4.15s
