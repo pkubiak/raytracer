@@ -33,44 +33,23 @@ Static scene:
     Render time: 15.33s
 
   Rendering time (SAH in O(nlogn)):
+    Based on:
+      On building fast kd-Trees for Ray Tracing, and on doing that in O(N log N)
+      Ingo Wald (University of Utah), Vlastimil Havran (University in Prague)
+
     Optimizations:
       * Changed std::stack to array implementation (reduced number of mallocs).
       * Inlined cost function
       * Optimized Vector operator()
     Todo:
-      * Migrate from vectors to lists
+      * Radix sort
       * Split triangles in the middle
-    in progress
 
-Original O(nlog^2n):
-  15007 faces loaded.
-  loadScene time: 0.029150
-  rebuildIndex time: 0.495305
-  Primitives count: 29956
-  render time: 3.065070
-  ./bin/cgray  3.72s user 0.01s system 99% cpu 3.738 total
-O(nlogn):
-  15007 faces loaded.
-  loadScene time: 0.027044
-  rebuildIndex time: 0.781665
-  Primitives count: 29956
-  render time: 2.862840
-  ./bin/cgray  3.86s user 0.01s system 99% cpu 3.877 total
+    Total time: 43.67s on 4 cores (70.68s total cpu time)
 
-Full scene:
-  loadScene time: 1.801797
-  rebuildIndex time: 35.671314
-  Primitives count: 2426436
-  render time: 11.278476
-  ./bin/cgray  77.35s user 0.51s system 155% cpu 50.093 total
-
-with inlined/optimized cost function:
-  loadScene time: 1.849535
-  rebuildIndex time: 29.302860
-  Primitives count: 2426436
-  render time: 11.893845
-  ./bin/cgray  71.67s user 0.61s system 162% cpu 44.358 total
-
+    Loading scene: 1.82s
+    Building KDTree: 29.23s
+    Render time: 12.23s
 
 -----------------------------------------------------------
 

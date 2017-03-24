@@ -132,7 +132,7 @@ namespace rt{
   #define _type(X) (((*X).second >> 30)&3)
   #define _pointer(X) (((*X).second)&((1<<28)-1))
 
-  tuple<int, list<pair<float, unsigned> >*, BBox, int> S[105];
+  tuple<int, vector<pair<float, unsigned> >*, BBox, int> S[105];
   int S_pos;
 
   void KDTree::rebuildIndex(){
@@ -145,8 +145,8 @@ namespace rt{
 
       // float    -> split plane position
       // unsigned -> 2bits - event type(0-end, 1-planar-lying on split plane, 2-start), 2bits - axis(0-x,1-y,2-z), 28bits - primitive id.
-      vector<pair<float, unsigned>>* events_v = new vector<pair<float, unsigned>>();
-      events_v->resize(6*primitives.size());
+      vector<pair<float, unsigned>>* events = new vector<pair<float, unsigned>>();
+      events->resize(6*primitives.size());
 
       int pos = 0;
       root_box = BBox::empty();
@@ -158,22 +158,21 @@ namespace rt{
 
         for(int axe = 0; axe < 3; axe++){
           if(box.min(axe) == box.max(axe)) // primitive lying on split plane
-            (*events_v)[pos++] = make_pair(box.min(axe), (TYPE_ON<<30) | (axe << 28) | i);
+            (*events)[pos++] = make_pair(box.min(axe), (TYPE_ON<<30) | (axe << 28) | i);
           else{
-            (*events_v)[pos++] = make_pair(box.min(axe), (TYPE_BEGIN<<30) | (axe << 28) | i);
-            (*events_v)[pos++] = make_pair(box.max(axe), (TYPE_END<<30) | (axe << 28) | i);
+            (*events)[pos++] = make_pair(box.min(axe), (TYPE_BEGIN<<30) | (axe << 28) | i);
+            (*events)[pos++] = make_pair(box.max(axe), (TYPE_END<<30) | (axe << 28) | i);
           }
         }
       }
-      // events->resize(pos);
+      events->resize(pos);
 
       //TODO: radix sort
-      sort(events_v->begin(), events_v->end());
+      sort(events->begin(), events->end());
 
-      auto events = new list<pair<float, unsigned>>(events_v->begin(), events_v->end());
-      events_v->clear();
-      delete events_v;
-      
+      // Remove recursion using stack
+      // std::stack<tuple<int, vector<pair<float, unsigned> >*, BBox> > S;
+
       // Initial KDTreeNode
       KDTreeNode *node = new KDTreeNode();
       node->pointer = 0;
@@ -291,25 +290,23 @@ namespace rt{
 
 
             // Create events list for children
-            //auto events_left = new list<pair<float, unsigned>>();
-            auto events_left = events;
-            auto events_right = new list<pair<float, unsigned>>();
+            auto events_left = new vector<pair<float, unsigned>>();
+            auto events_right = new vector<pair<float, unsigned>>();
 
-            // events_left->resize(counts[LEFT] + counts[BOTH]);
-            // events_right->resize(counts[RIGHT] + counts[BOTH]);
+            events_left->resize(counts[LEFT] + counts[BOTH]);
+            events_right->resize(counts[RIGHT] + counts[BOTH]);
 
             // Split events into left and right events (sometimes to both).
-            for(auto it = events->begin(); it != events->end();){
+            int pos_left = 0, pos_right = 0;
+            for(auto it = events->begin(); it != events->end(); it++){
               int pointer = _pointer(it);
+              if(tmp[pointer] != RIGHT)//LEFT or BOTH
+                (*events_left)[pos_left++] = (*it);
               if(tmp[pointer] != LEFT)//RIGHT or BOTH
-                events_right->push_back(*it);
-
-              if(tmp[pointer] == RIGHT){//LEFT or BOTH
-                auto it2 = it;it++;
-                events_left->erase(it2);
-              }else
-                it++;
+                (*events_right)[pos_right++] = (*it);
             }
+            assert(pos_left == events_left->size());
+            assert(pos_right == events_right->size());
 
             // Split bbox into two parts
             BBox left_box = box, right_box = box;
@@ -336,6 +333,7 @@ namespace rt{
             node->axe = bestAxe;
             node->split = bestP;
 
+            delete events;
             done = true;
           }
         }

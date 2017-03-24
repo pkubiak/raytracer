@@ -34,16 +34,16 @@ int main() {
 
     // for(int x = -3;x<=0;x++)
     //  for(int z=-3;z<=0;z++)
-        loadOBJ(scene, "models/", "dude.obj", nullptr, Vector(0,0,0));
+        // loadOBJ(scene, "models/", "dude.obj", nullptr, Vector(0,0,0));
       // loadOBJ(scene, "models/", "armadillo.obj", nullptr, Vector(0,0,0));
       // for(int i=0;i<1;i++)
-    Vector v(0,1,2);
-    printf("%p %p %p\n", &v.x, &v.y, &v.z);
-    printf("%f %f %f\n", v(0), v(1), v(2));
+    // Vector v(0,1,2);
+    // printf("%p %p %p\n", &v.x, &v.y, &v.z);
+    // printf("%f %f %f\n", v(0), v(1), v(2));
 
-    // for(int x = -4;x<=4;x++)
-    //   for(int z=-4;z<=4;z++)
-    //     loadOBJ(scene, "models/", "dude.obj", nullptr, Vector(2*x,0,2*z));
+    for(int x = -4;x<=4;x++)
+      for(int z=-4;z<=4;z++)
+        loadOBJ(scene, "models/", "dude.obj", nullptr, Vector(2*x,0,2*z));
 
     auto stop = system_clock::now();
     printf("loadScene time: %f\n", (float)duration_cast<nanoseconds>(stop - start).count()/1000000000.0);
