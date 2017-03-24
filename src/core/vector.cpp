@@ -101,18 +101,9 @@ namespace rt {
     NOT_IMPLEMENTED;
   }
 
-  // float& Vector::operator()(int p){
-  //   if(p == 0)return x;
-  //   if(p == 1)return y;
-  //   if(p == 2)return z;
-  //   UNREACHABLE;
-  // }
 
-  const float& Vector::operator()(int p) const{
-    if(p == 0)return x;
-    if(p == 1)return y;
-    if(p == 2)return z;
-    UNREACHABLE;
+  const float Vector::operator()(int p) const{
+    return *(&x+p);
   }
 
 }

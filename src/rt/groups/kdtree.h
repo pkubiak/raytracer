@@ -30,8 +30,8 @@ namespace rt {
   public:
     vector<Primitive* > primitives;
     vector<KDTreeNode*> nodes;
-    vector<list<Primitive*>* > leaves;
-    // vector<vector<Primitive*>* > leaves;
+    // vector<list<Primitive*>* > leaves;
+    vector<vector<Primitive*>* > leaves;
     BBox root_box;
       KDTree();
       virtual BBox getBounds() const;
