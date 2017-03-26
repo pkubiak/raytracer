@@ -20,6 +20,9 @@ using std::chrono::nanoseconds;
 using std::chrono::duration_cast;
 using namespace rt;
 
+float ranf(){
+  return (float)(rand()%10000)/5000.0-1.0;
+}
 int main() {
     Image img(1920, 1280);
     // Image img(640, 480);
@@ -27,8 +30,9 @@ int main() {
     auto start = system_clock::now();
     KDTree* scene = new KDTree();
 
-    // for(int i=0;i<20;i++)
-    // scene->add(new Sphere(Point(i-10,  0.0f,  15.0), 1.5  , nullptr, nullptr));
+    // for(int i=0;i<2000;i++){
+    //   scene->add(new Sphere(Point(7.0*ranf(),  7.0*ranf(),  10.0*ranf()+16.0), 0.9  , nullptr, nullptr));
+    // }
     // scene->add(new Sphere(Point(2.5f,  -1.f, 7), 0.5, nullptr, nullptr));
     // scene->add(new Sphere(Point(4.5f,  .5f,  12), 0.5 , nullptr, nullptr));
 
@@ -58,7 +62,7 @@ int main() {
     world.scene = scene;
 
     // PerspectiveCamera cam1(2.0*Point(0.0f, 0.25f, -8.0f), Vector(0.0f,0.0f, 1.0f), Vector(0, 1, 0), pi/8, pi/6);
-    // PerspectiveCamera cam1(2.0*Point(0.0f, 0.95f, 6.0f), Vector(0.0f,0.0f, -1.0f), Vector(0, 1, 0), pi/8, pi/6);
+    // PerspectiveCamera cam1(2.0*Point(0.0f, 0.95f, -5.0f), Vector(0.0f,0.0f, 1.0f), Vector(0, 1, 0), pi/8, pi/6);
     PerspectiveCamera cam1(2.0*Point(-5.85f, 7.85f, 7.0f), Vector(1.0f,-1.0f,-1.0f), Vector(0, 1, 0), pi/8, pi/6);
     // PerspectiveCamera cam2(Point(16.065f, -12.506f, 1.771f), Point(-0.286f, -0.107f, 1.35f)-Point(16.065f, -12.506f, 1.771f), Vector(0, 0, 1), pi/8, pi/6);
 

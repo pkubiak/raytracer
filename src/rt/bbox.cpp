@@ -33,8 +33,6 @@ namespace rt {
   void BBox::extend(const BBox& bbox){
     this->min = rt::min(bbox.min, this->min);
     this->max = rt::max(bbox.max, this->max);
-    // this->extend(bbox.min);
-    // this->extend(bbox.max);
   }
 
   std::pair<float,float> BBox::intersect(const Ray& ray) const {

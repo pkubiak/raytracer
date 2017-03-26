@@ -13,6 +13,8 @@ Main Model:
 -----------------------------------------------------------
 
 Static scene:
+  File: render.png
+
   Scene:
     81 x model of Brigand
     Primitives count: 2,426,436
@@ -41,15 +43,18 @@ Static scene:
       * Changed std::stack to array implementation (reduced number of mallocs).
       * Inlined cost function
       * Optimized Vector operator()
+      * Fixed bugs in KDTree Traversal
+      * Optimized constants
     Todo:
       * Radix sort
       * Split triangles in the middle
 
-    Total time: 43.67s on 4 cores (70.68s total cpu time)
+    Total time: 19.87s on 4 cores (33.04s total cpu time)
 
     Loading scene: 1.82s
-    Building KDTree: 29.23s
-    Render time: 12.23s
+    Sorting events: 1.52s
+    Building KDTree: 11.46s
+    Render time: 5.97s
 
 -----------------------------------------------------------
 
