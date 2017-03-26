@@ -11,6 +11,7 @@ private:
     std::vector<Primitive*> primitives;
 
 public:
+    SimpleGroup(): Group() {}
     virtual BBox getBounds() const;
     virtual Intersection intersect(const Ray& ray, float previousBestDistance=FLT_MAX) const;
     virtual void rebuildIndex();

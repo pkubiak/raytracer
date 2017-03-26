@@ -12,9 +12,7 @@ private:
   Point max;
 
 public:
-    AABox() {
-      min = Point(); max = Point();
-    }
+    AABox() {}
     AABox(const Point& corner1, const Point& corner2, CoordMapper* texMapper, Material* material);
 
     virtual BBox getBounds() const;

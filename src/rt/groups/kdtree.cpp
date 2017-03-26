@@ -8,17 +8,11 @@
 #include "../intersection.h"
 #include <tuple>
 #include <chrono>
-#define DEBUG 0
+
 using namespace std;
-using std::chrono::system_clock;
-using std::chrono::milliseconds;
-using std::chrono::nanoseconds;
-using std::chrono::duration_cast;
-// #define SPLIT_IN_MIDDLE 0
-// #define SURFACE_AREA_HEURISTIC 1
 
 namespace rt{
-  KDTree::KDTree() {}
+  KDTree::KDTree(): Group(){}
 
   KDTree::~KDTree() {
     for(auto p: nodes)
@@ -29,7 +23,7 @@ namespace rt{
   }
 
   BBox KDTree::getBounds() const {
-    return root_box;
+    return bbox;
   }
 
   tuple<int, float, float> stack[100];
@@ -40,7 +34,7 @@ namespace rt{
     int ile = 0;
     // stack<tuple<int, float, float>> S;//node int, node bbox, time_in, time_out
     s_pos = 0;
-    pair<float, float> t0t1 = root_box.intersect(ray);
+    pair<float, float> t0t1 = bbox.intersect(ray);
 
     if(t0t1.first > previousBestDistance || t0t1.second < 0){
       return Intersection::failure();
@@ -62,25 +56,22 @@ namespace rt{
         continue;
 
       if(node->is_leaf()){
-        // printf("LEAF: %d\n", node_id);
         Intersection bestIntersection = Intersection::failure();
 
         auto childrens = leaves[node->pointer];
 
         // intersect all childrens
         for(Primitive* primitive: *childrens){
-          // printf("TESTING: %p\n", primitive);
           Intersection inter = primitive->intersect(ray, previousBestDistance);
           ile++;
           if(inter)
-            // printf("DIST: %f\n", inter.distance);
+
           if(inter && inter.distance >= 0.0 && (!bestIntersection || inter.distance < bestIntersection.distance)){
             bestIntersection = inter;
             previousBestDistance = inter.distance;
-            // printf("UPDATE: %f\n", inter.distance);
           }
         }
-        // printf("ISOK: %f, %f, %f\n",t0, bestIntersection.distance, t1);
+
         if(bestIntersection && bestIntersection.distance <= t1){
           return bestIntersection;
         }
@@ -151,12 +142,10 @@ namespace rt{
       events->resize(6*primitives.size());
 
       int pos = 0;
-      root_box = BBox::empty();
 
       // Generate all (start, end, planar) events.
       for(int i=0;i<primitives.size();i++){
         BBox box = primitives[i]->getBounds();
-        root_box.extend(box);
 
         for(int axe = 0; axe < 3; axe++){
           if(box.min(axe) == box.max(axe)) // primitive lying on split plane
@@ -180,7 +169,7 @@ namespace rt{
       node->pointer = 0;
 
       nodes.push_back(node);
-      S[S_pos++] = make_tuple(0, events, root_box, primitives.size());
+      S[S_pos++] = make_tuple(0, events, bbox, primitives.size());
 
       while(S_pos > 0){
         int node_id = std::get<0>(S[S_pos-1]);
@@ -358,6 +347,7 @@ namespace rt{
 
   void KDTree::add(Primitive* p){
     primitives.push_back(p);
+    bbox.extend(p->getBounds());
   }
 
   void KDTree::setMaterial(Material* m){

@@ -3,23 +3,13 @@
 
 namespace rt {
   Triangle::Triangle(Point vertices[3], CoordMapper* _texMapper, Material* _material):
-    Solid(_texMapper, _material), v1(vertices[0]), v2(vertices[1]), v3(vertices[2]), box(BBox::empty()) {
+    Solid(_texMapper, _material), v1(vertices[0]), v2(vertices[1]), v3(vertices[2]) {
     normal = cross(v2-v1, v3-v1).normalize();
-    box.extend(v1);
-    box.extend(v2);
-    box.extend(v3);
   }
 
   Triangle::Triangle(const Point& _v1, const Point& _v2, const Point& _v3, CoordMapper* _texMapper, Material* _material):
-    Solid(_texMapper, _material), v1(_v1), v2(_v2), v3(_v3), box(BBox::empty()){
+    Solid(_texMapper, _material), v1(_v1), v2(_v2), v3(_v3){
     normal = cross(v2-v1, v3-v1).normalize();
-    box.extend(v1);
-    box.extend(v2);
-    box.extend(v3);
-  }
-
-  BBox Triangle::getBounds() const {
-    return box;
   }
 
   Intersection Triangle::intersect(const Ray& ray, float previousBestDistance) const {
@@ -41,6 +31,14 @@ namespace rt {
       return Intersection::failure();
 
     return Intersection(t0, ray, this, normal, Point(1-s-t,s,t));
+  }
+
+  BBox Triangle::getBounds() const {
+    BBox bbox = BBox::empty();
+    bbox.extend(v1);
+    bbox.extend(v2);
+    bbox.extend(v3);
+    return bbox;
   }
 
   Point Triangle::sample() const {

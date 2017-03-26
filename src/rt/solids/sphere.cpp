@@ -6,14 +6,7 @@
 namespace rt {
 
   Sphere::Sphere(const Point& center, float radius, CoordMapper* texMapper, Material* material):
-    Solid(texMapper, material), center(center), radius(radius), box(BBox::empty()){
-    box.extend(Point(center.x-radius, center.y-radius, center.z-radius));
-    box.extend(Point(center.x+radius, center.y+radius, center.z+radius));
-  }
-
-  BBox Sphere::getBounds() const {
-    return box;
-  }
+    Solid(texMapper, material), center(center), radius(radius){}
 
   Intersection Sphere::intersect(const Ray& ray, float previousBestDistance) const {
     // (p-c)^2-r^2=0
@@ -42,6 +35,12 @@ namespace rt {
     return Intersection::failure();
   }
 
+  BBox Sphere::getBounds() const {
+    return BBox(
+      Point(center.x-radius, center.y-radius, center.z-radius),
+      Point(center.x+radius, center.y+radius, center.z+radius)
+    );
+  }
   Point Sphere::sample() const {
     NOT_IMPLEMENTED;
   }

@@ -2,7 +2,5 @@
 
 namespace rt {
   Solid::Solid(CoordMapper* _texMapper, Material* _material):
-    material(_material), texMapper(_texMapper) {
-
-   }
+    material(_material), texMapper(_texMapper) {}
 }

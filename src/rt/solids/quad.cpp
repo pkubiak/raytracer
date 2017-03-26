@@ -6,17 +6,7 @@
 
 namespace rt {
   Quad::Quad(const Point& _v1, const Vector& _span1, const Vector& _span2, CoordMapper* _texMapper, Material* _material):
-    Solid(_texMapper, _material), v1(_v1), span1(_span1), span2(_span2) {
-      boundingBox = BBox::empty();
-      boundingBox.extend(v1);
-      boundingBox.extend(v1+span1);
-      boundingBox.extend(v1+span2);
-      boundingBox.extend(v1+(span1+span2));
-    }
-
-  BBox Quad::getBounds() const {
-    return boundingBox;
-  }
+    Solid(_texMapper, _material), v1(_v1), span1(_span1), span2(_span2) {}
 
   Intersection Quad::intersect(const Ray& ray, float previousBestDistance) const {
     Vector normal = cross(span1, span2).normalize();
@@ -30,14 +20,20 @@ namespace rt {
 
     float u = (v12*v2p - v22*v1p)/(v12*v12 - v11*v22);
     float v = (v12*v1p - v11*v2p)/(v12*v12 - v11*v22);
-    // printf("%f %f\n", u, v))
+
     if(u<0.0 || v < 0.0 || u >1.0 || v > 1.0)
       return Intersection::failure();
-    // Vector vvv = (u*span1+v*span2)-vp;
-    // printf("%f, %f -> [%f,%f,%f]\n", u,v, vvv.x,vvv.y,vvv.z);
-    // if(dot(normal, ray.d) > 0.0)
-      // return Intersection(t, ray, this, -normal, Point(u,v,0));
+
     return Intersection(t, ray, this, normal, Point(u,v,0));
+  }
+
+  BBox Quad::getBounds() const {
+    BBox bbox = BBox::empty();
+    bbox.extend(v1);
+    bbox.extend(v1+span1);
+    bbox.extend(v1+span2);
+    bbox.extend(v1+(span1+span2));
+    return bbox;
   }
 
   Point Quad::sample() const {

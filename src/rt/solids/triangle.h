@@ -15,10 +15,9 @@ private:
   Point v2;
   Point v3;
   Vector normal;
-  BBox box;
-  
+
 public:
-    // Triangle() {}
+    Triangle() {}
     Triangle(Point vertices[3], CoordMapper* texMapper, Material* material);
     Triangle(const Point& v1, const Point& v2, const Point& v3, CoordMapper* texMapper, Material* material);
 

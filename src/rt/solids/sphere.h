@@ -7,11 +7,11 @@
 namespace rt {
 
 class Sphere : public Solid {
-  BBox box;
-public:
+  private:
     Point center;
     float radius;
 
+  public:
     Sphere() {}
     Sphere(const Point& center, float radius, CoordMapper* texMapper, Material* material);
 

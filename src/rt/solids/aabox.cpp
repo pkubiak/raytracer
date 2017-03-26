@@ -6,14 +6,9 @@
 namespace rt {
   AABox::AABox(const Point& corner1, const Point& corner2, CoordMapper* texMapper, Material* material):
     Solid(texMapper, material) {
-    this->min = rt::min(corner1, corner2);
-    this->max = rt::max(corner1, corner2);
-    // printf("[%f,%f]x[%f,%f]x[%f,%f]\n", min.x,max.x, min.y,max.y,min.z,max.z);
+    min = rt::min(corner1, corner2);
+    max = rt::max(corner1, corner2);
   };
-
-  BBox AABox::getBounds() const {
-    NOT_IMPLEMENTED;
-  }
 
   Intersection AABox::intersect(const Ray& ray, float previousBestDistance) const {
     float tbest = INFINITY;
@@ -43,9 +38,14 @@ namespace rt {
     return Intersection::failure();
   }
 
+  BBox AABox::getBounds() const {
+    return BBox(min, max);
+  }
+
   Point AABox::sample() const {
     NOT_IMPLEMENTED;
   };
+
   float AABox::getArea() const {
     NOT_IMPLEMENTED;
   };

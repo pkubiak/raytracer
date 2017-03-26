@@ -25,23 +25,19 @@ namespace rt {
   };
 
   class KDTree : public Group {
-  private:
-
   public:
     vector<Primitive* > primitives;
     vector<KDTreeNode*> nodes;
-    // vector<list<Primitive*>* > leaves;
     vector<vector<Primitive*>* > leaves;
-    BBox root_box;
-      KDTree();
-      virtual BBox getBounds() const;
-      virtual Intersection intersect(const Ray& ray, float previousBestDistance=FLT_MAX) const;
-      virtual void rebuildIndex();
-    	virtual ~KDTree();
-      virtual void add(Primitive* p);
-      virtual void setMaterial(Material* m);
-      virtual void setCoordMapper(CoordMapper* cm);
 
+    KDTree();
+    virtual BBox getBounds() const;
+    virtual Intersection intersect(const Ray& ray, float previousBestDistance=FLT_MAX) const;
+    virtual void rebuildIndex();
+  	virtual ~KDTree();
+    virtual void add(Primitive* p);
+    virtual void setMaterial(Material* m);
+    virtual void setCoordMapper(CoordMapper* cm);
   };
 
 

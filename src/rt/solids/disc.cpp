@@ -6,23 +6,29 @@
 
 namespace rt {
   Disc::Disc(const Point& _center, const Vector& _normal, float _radius, CoordMapper* _texMapper, Material* _material):
-    Solid(_texMapper, _material), center(_center), normal(_normal), radius(_radius) {
-    // printf("[%f, %f, %f]", normal.x, normal.y, normal.z);
-  }
-
-  BBox Disc::getBounds() const {
-    NOT_IMPLEMENTED;
-  }
+    Solid(_texMapper, _material), center(_center), normal(_normal), radius(_radius) {}
 
   Intersection Disc::intersect(const Ray& ray, float previousBestDistance) const {
     float t = dot(normal, center-ray.o)/dot(ray.d, normal);
-    // printf("[%f, %f,  %f]", normal.x, normal.y, normal.z);
-    // printf("[%f,%f,%f] [%f,%f,%f]\n", ray.d.x, ray.d.y, ray.d.z, normal.x, normal.y,normal.z);
+
     if((t < 0) || (t > previousBestDistance) || (((ray.o + t*ray.d)-center).length() > radius))
       return Intersection::failure();
     return Intersection(t, ray, this, normal, Point());
   }
 
+  BBox Disc::getBounds() const {
+    // Bounding box calculation based on: http://iquilezles.org/www/articles/diskbbox/diskbbox.htm
+    return BBox(Point(
+        center.x - radius * sqrt(1.0 - normal.x*normal.x),
+        center.y - radius * sqrt(1.0 - normal.y*normal.y),
+        center.z - radius * sqrt(1.0 - normal.z*normal.z)
+      ), Point(
+        center.x + radius * sqrt(1.0 - normal.x*normal.x),
+        center.y + radius * sqrt(1.0 - normal.y*normal.y),
+        center.z + radius * sqrt(1.0 - normal.z*normal.z)
+      )
+    );
+  }
   Point Disc::sample() const {
     NOT_IMPLEMENTED;
   }

@@ -1,22 +1,16 @@
 #include "infiniteplane.h"
 #include <core/assert.h>
-#include "../bbox.h"
-#include "../intersection.h"
+#include <rt/bbox.h>
+#include <rt/intersection.h>
 #include "../../core/point.h"
 
 namespace rt {
 
   InfinitePlane::InfinitePlane(const Point& origin, const Vector& normal, CoordMapper* texMapper, Material* material):
-    Solid(texMapper, material), origin(origin), normal(normal) {
-
-  }
-
-  BBox InfinitePlane::getBounds() const {
-    return BBox::full();
-  }
+    Solid(texMapper, material), origin(origin), normal(normal) {}
 
   Intersection InfinitePlane::intersect(const Ray& ray, float previousBestDistance) const {
-    //(ray.o + t*ray.d - origin)*normal == 0
+    //(ray.o + t*ray.d - origin)*normal = 0
     // (ray.o.x + t*ray.d.x - origin.x)*normal.x+
     // (ray.o.y + t*ray.d.y - origin.y)*normal.y+
     // (ray.o.z + t*ray.d.z - origin.z)*normal.z  = 0
@@ -27,6 +21,10 @@ namespace rt {
       return Intersection::failure();
 
     return Intersection(t, ray, this, normal, Point());
+  }
+
+  BBox InfinitePlane::getBounds() const {
+    return BBox::full();
   }
 
   Point InfinitePlane::sample() const {

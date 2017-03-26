@@ -13,12 +13,9 @@ private:
   Point v1;
   Vector span1;
   Vector span2;
-  // Vector normal;
-  Triangle *tr1, *tr2;
-  BBox boundingBox;
 
 public:
-    // Quad() {}
+    Quad() {}
     Quad(const Point& v1, const Vector& span1, const Vector& span2, CoordMapper* texMapper, Material* material);
 
     virtual BBox getBounds() const;

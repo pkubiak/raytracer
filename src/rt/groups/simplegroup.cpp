@@ -5,10 +5,7 @@
 
 namespace rt {
   BBox SimpleGroup::getBounds() const {
-    BBox res = BBox::empty();
-    for(auto p: primitives)
-      res.extend(p->getBounds());
-    return res;
+    return bbox;
   }
 
   Intersection SimpleGroup::intersect(const Ray& ray, float previousBestDistance) const {
@@ -30,6 +27,7 @@ namespace rt {
 
   void SimpleGroup::add(Primitive* p){
     primitives.push_back(p);
+    bbox.extend(p->getBounds());
   }
 
   void SimpleGroup::setMaterial(Material* m) {
