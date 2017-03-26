@@ -31,7 +31,7 @@ namespace rt {
     NOT_IMPLEMENTED;
   }
   float InfinitePlane::getArea() const {
-    NOT_IMPLEMENTED;
+    return INFINITY;
   }
 
 }

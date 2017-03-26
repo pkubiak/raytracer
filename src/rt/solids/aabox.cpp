@@ -47,6 +47,6 @@ namespace rt {
   };
 
   float AABox::getArea() const {
-    NOT_IMPLEMENTED;
+    return 2.0*((max.x-min.x)*(max.y-min.y + max.z-min.z) + (max.y-min.y)*(max.z-min.z));
   };
 }

@@ -46,6 +46,6 @@ namespace rt {
   }
 
   float Sphere::getArea() const {
-    NOT_IMPLEMENTED;
+    return 4.0*3.1415926*radius*radius;
   }
 }

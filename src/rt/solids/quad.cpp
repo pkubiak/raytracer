@@ -41,6 +41,6 @@ namespace rt {
   }
 
   float Quad::getArea() const {
-    NOT_IMPLEMENTED;
+    return cross(span1, span2).length();
   }
 }

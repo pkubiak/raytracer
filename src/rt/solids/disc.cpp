@@ -34,6 +34,6 @@ namespace rt {
   }
 
   float Disc::getArea() const {
-    NOT_IMPLEMENTED;
+    return 3.1415926*radius*radius;
   }
 }

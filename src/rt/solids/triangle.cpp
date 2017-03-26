@@ -46,6 +46,6 @@ namespace rt {
   }
 
   float Triangle::getArea() const {
-    NOT_IMPLEMENTED;
+    return 0.5*cross(v2-v1, v3-v1).length();
   }
 }
