@@ -33,9 +33,9 @@ namespace rt {
       float t1 = 0.5*(sqrt(delta) - B)/A, t2 = 0.5*(-sqrt(delta) - B)/A;
 
       if(t2 < 0.0){
-        if(t1 > 0.0 && t1 < previousBestDistance)
+        if(t1 > 0.0 && t1 <= previousBestDistance)
           return Intersection(t1, ray, this, (ray.o + t1*ray.d) - center, Point());
-      }else if(t2 < previousBestDistance)
+      }else if(t2 <= previousBestDistance)
         return Intersection(t2, ray, this, (ray.o + t2*ray.d) -center, Point());
     }
 

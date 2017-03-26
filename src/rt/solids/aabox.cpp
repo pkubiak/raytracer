@@ -37,7 +37,7 @@ namespace rt {
             }
           }
         }
-    if(tbest < previousBestDistance)
+    if(tbest <= previousBestDistance)
       return Intersection(tbest, ray, this, n, Point());
 
     return Intersection::failure();
