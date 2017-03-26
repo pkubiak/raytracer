@@ -8,8 +8,6 @@
 #include<cstdio>
 
 namespace rt {
-  // class BBox;
-
   BBox BBox::empty(){
     BBox box;
     box.min = Point(INFINITY,INFINITY,INFINITY);
@@ -24,10 +22,6 @@ namespace rt {
   void BBox::extend(const Point& point) {
     min = rt::min(point, min);
     max = rt::max(point, max);
-  }
-
-  bool BBox::isEmpty() const {
-    return min.x > max.x;
   }
 
   void BBox::extend(const BBox& bbox){
@@ -53,11 +47,12 @@ namespace rt {
     return std::make_pair(t1, t2);
   }
 
+  bool BBox::isEmpty() const {
+    return (min.x == INFINITY && min.y  == INFINITY && min.z == INFINITY && max.x == -INFINITY && max.y == -INFINITY && max.z == -INFINITY);
+  }
+
   bool BBox::isUnbound() {
-    for(int i=0;i<3;i++)
-      if(min(i)==-INFINITY||max(i)==INFINITY)
-        return true;
-    return false;
+    return (min.x == -INFINITY && min.y  == -INFINITY && min.z == -INFINITY && max.x == INFINITY && max.y == INFINITY && max.z == INFINITY);
   }
 
   bool BBox::contains(Point& p) const {
