@@ -23,7 +23,8 @@ namespace rt {
 
     if(u<0.0 || v < 0.0 || u >1.0 || v > 1.0)
       return Intersection::failure();
-
+    if(dot(normal, ray.d) > 0)
+      normal = -normal;
     return Intersection(t, ray, this, normal, Point(u,v,0));
   }
 
