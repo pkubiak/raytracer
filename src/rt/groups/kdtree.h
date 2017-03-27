@@ -20,7 +20,7 @@ namespace rt {
 
     KDTreeNode();
     ~KDTreeNode() {};
-    bool is_leaf() const;
+    // bool is_leaf() const;
     // BBox getBounds() const;
   };
 

@@ -9,6 +9,21 @@
 #include <tuple>
 #include <chrono>
 
+#define LEFT 0
+#define RIGHT 2
+#define BOTH 1
+#define PLANAR 1
+#define LEAF 3
+
+#define TYPE_END 0
+#define TYPE_ON 1
+#define TYPE_BEGIN 2
+
+#define _p(X) ((*X).first)
+#define _axe(X) (((*X).second >> 28)&3)
+#define _type(X) (((*X).second >> 30)&3)
+#define _pointer(X) (((*X).second)&((1<<28)-1))
+
 using namespace std;
 
 namespace rt{
@@ -46,40 +61,39 @@ namespace rt{
     float t0, t1;
     KDTreeNode *node;
 
+    Intersection bestIntersection = Intersection::failure();
+
     while(s_pos > 0){
       std::tie(node_id, t0, t1) = stack[--s_pos];
       assert(t0<t1);
       node = nodes[node_id];
-      // printf("TRACE: %d -> [t0=%f,t1=%f]\n", node_id, t0, t1);
 
       if(t0 > previousBestDistance)
         continue;
 
-      if(node->is_leaf()){
-        Intersection bestIntersection = Intersection::failure();
+      if(node->axe == LEAF){
+        if(node->pointer > 0){
+          auto childrens = leaves[node->pointer-1];
 
-        auto childrens = leaves[node->pointer];
+          // intersect all childrens
+          for(Primitive* primitive: *childrens){
+            Intersection inter = primitive->intersect(ray, previousBestDistance);
+            ile++;
 
-        // intersect all childrens
-        for(Primitive* primitive: *childrens){
-          Intersection inter = primitive->intersect(ray, previousBestDistance);
-          ile++;
-          if(inter)
+            if(inter && inter.distance >= 0.0 && (!bestIntersection || inter.distance < bestIntersection.distance)){
+              bestIntersection = inter;
+              previousBestDistance = inter.distance;
+            }
+          }
 
-          if(inter && inter.distance >= 0.0 && (!bestIntersection || inter.distance < bestIntersection.distance)){
-            bestIntersection = inter;
-            previousBestDistance = inter.distance;
+          if(bestIntersection && bestIntersection.distance <= t1){
+            return bestIntersection;
           }
         }
-
-        if(bestIntersection && bestIntersection.distance <= t1){
-          return bestIntersection;
-        }
-
       }else{
         // o(axe)+t*d(axe) = split
         float t = (node->split - ray.o(node->axe))/ray.d(node->axe);
-        // printf("%f, %f-%f | %f\n",t,t0,t1,node->split);
+
         // we intersect both subnodes
         if(t0 <= t && t <= t1){
           if(ray.o(node->axe) < node->split){
@@ -108,20 +122,6 @@ namespace rt{
 
     return Intersection::failure();
   }
-
-  #define LEFT 0
-  #define RIGHT 2
-  #define BOTH 1
-  #define PLANAR 1
-
-  #define TYPE_END 0
-  #define TYPE_ON 1
-  #define TYPE_BEGIN 2
-
-  #define _p(X) ((*X).first)
-  #define _axe(X) (((*X).second >> 28)&3)
-  #define _type(X) (((*X).second >> 30)&3)
-  #define _pointer(X) (((*X).second)&((1<<28)-1))
 
   tuple<int, vector<pair<float, unsigned> >*, BBox, int> S[105];
   int S_pos;
@@ -328,17 +328,20 @@ namespace rt{
         }
 
         if(!done){
-          node->axe = 3;
+          node->axe = LEAF;
 
-          vector<Primitive*> *node_primitives = new vector<Primitive*>();
+          if(events->size() > 0){
+            vector<Primitive*> *node_primitives = new vector<Primitive*>();
 
-          for(auto it = events->begin(); it != events->end(); it++)
-            if(_axe(it) == 0 && _type(it) != TYPE_END){
-              node_primitives->push_back(primitives[_pointer(it)]);
-            }
+            for(auto it = events->begin(); it != events->end(); it++)
+              if(_axe(it) == 0 && _type(it) != TYPE_END){
+                node_primitives->push_back(primitives[_pointer(it)]);
+              }
 
-          leaves.push_back(node_primitives);
-          node->pointer = leaves.size()-1;
+            leaves.push_back(node_primitives);
+            node->pointer = (leaves.size()-1) + 1;
+          }else
+            node->pointer = 0; // NULL
 
           delete events;
         }
@@ -360,7 +363,4 @@ namespace rt{
 
   KDTreeNode::KDTreeNode():axe(3), pointer(0), split(0.0){}
 
-  bool KDTreeNode::is_leaf() const {
-    return axe == 3;
-  }
 }
