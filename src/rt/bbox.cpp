@@ -36,12 +36,10 @@ namespace rt {
       for(int s=0;s<2;s++)
         if(ray.d(c) != 0){
           float t = ((s == 0 ? this->min(c) : this->max(c))-ray.o(c))/ray.d(c);
-          if(t >= 0){
-            Point p = ray.o + (t * ray.d);
-            if(((c==0)||(min.x<=p.x&&p.x<=max.x))&&((c==1)||(min.y<=p.y&&p.y<=max.y))&&((c==2)||(min.z<=p.z&&p.z<=max.z))){
-              t1 = std::min(t1, t);
-              t2 = std::max(t2, t);
-            }
+          Point p = ray.o + (t * ray.d);
+          if(((c==0)||(min.x<=p.x&&p.x<=max.x))&&((c==1)||(min.y<=p.y&&p.y<=max.y))&&((c==2)||(min.z<=p.z&&p.z<=max.z))){
+            t1 = std::min(t1, t);
+            t2 = std::max(t2, t);
           }
         }
     return std::make_pair(t1, t2);
