@@ -22,7 +22,7 @@ namespace rt {
   }
 
   void SimpleGroup::rebuildIndex() {
-    NOT_IMPLEMENTED;
+    // Do nothing
   }
 
   void SimpleGroup::add(Primitive* p){
@@ -31,7 +31,8 @@ namespace rt {
   }
 
   void SimpleGroup::setMaterial(Material* m) {
-    NOT_IMPLEMENTED;
+    for(auto p: primitives)
+      p->setMaterial(m);
   }
 
   void SimpleGroup::setCoordMapper(CoordMapper* cm) {

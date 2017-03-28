@@ -55,6 +55,9 @@ namespace rt{
       return Intersection::failure();
     }
 
+    if(t0t1.first < 0.0)
+      t0t1.first = 0.0;
+
     stack[s_pos++] = make_tuple(0, t0t1.first, t0t1.second);
 
     int node_id;
@@ -354,7 +357,8 @@ namespace rt{
   }
 
   void KDTree::setMaterial(Material* m){
-    NOT_IMPLEMENTED;
+    for(auto p: primitives)
+      p->setMaterial(m);
   }
 
   void KDTree::setCoordMapper(CoordMapper* cm){

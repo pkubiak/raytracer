@@ -9,7 +9,9 @@
 #include <rt/cameras/perspective.h>
 #include <rt/solids/quad.h>
 #include <rt/groups/simplegroup.h>
+#include <rt/groups/kdtree.h>
 #include <rt/materials/dummy.h>
+#include <rt/loaders/obj.h>
 
 #include <rt/lights/pointlight.h>
 
@@ -31,12 +33,15 @@ void makeBox(Group* scene, const Point& aaa, const Vector& forward, const Vector
 void renderCornellboxA(float scale, const char* filename) {
     Image img(400, 400);
     World world;
-    SimpleGroup* scene = new SimpleGroup();
+    KDTree* scene = new KDTree();
     world.scene = scene;
 
     PerspectiveCamera cam(Point(278*scale, 273*scale, -800*scale), Vector(0, 0, 1), Vector(0, 1, 0), 0.686f, 0.686f);
 
     DummyMaterial* mat = new DummyMaterial();
+    // TODO: Coś się psuje przy ładowaniu obj
+    // loadOBJ(scene, "models/", "dude.obj", nullptr, Vector(2.4, 0.0, 1.2));
+    // TODO: Co należy robić gdy element nie ma przypisanego materiału?
 
     scene->add(new Quad(Point(000.f,000.f,000.f)*scale, Vector(550.f,000.f,000.f)*scale, Vector(000.f,000.f,560.f)*scale, nullptr, mat)); //floor
     scene->add(new Quad(Point(550.f,550.f,000.f)*scale, Vector(-550.f,000.f,000.f)*scale, Vector(000.f,000.f,560.f)*scale, nullptr, mat)); //ceiling
@@ -49,11 +54,17 @@ void renderCornellboxA(float scale, const char* filename) {
 
     //tall box
     makeBox(scene, Point(265.f, 000.1f, 296.f)*scale, Vector(158.f, 000.f, -049.f)*scale, Vector(049.f, 000.f, 160.f)*scale, Vector(000.f, 330.f, 000.f)*scale, nullptr, mat);
+    // scene->add(new Triangle(Point(0,0,0)*scale, Point(550,0,500)*scale, Point(0,0,560)*scale, nullptr, mat));
+
+    scene->setMaterial(mat);
+
+    scene->rebuildIndex();
 
     //point light
     world.light.push_back(new PointLight(Point(288*scale,529.99f*scale,279.5f*scale),RGBColor::rep(40000.0f*scale*scale)));
     world.light.push_back(new PointLight(Point(490*scale,329.99f*scale,279.5f*scale),RGBColor(60000.0f*scale*scale,0,0)));
     world.light.push_back(new PointLight(Point(40*scale,329.99f*scale,279.5f*scale),RGBColor(0,60000.0f*scale*scale,0)));
+    // world.light.push_back(new PointLight(Point(220*scale,129.99f*scale,79.5f*scale),RGBColor(0,0,3*6000.0f*scale*scale)));
 
     RayTracingIntegrator integrator(&world);
 
