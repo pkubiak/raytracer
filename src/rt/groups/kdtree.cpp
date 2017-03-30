@@ -245,7 +245,7 @@ namespace rt{
           }
 
 
-          if(bestCost + 20.0< N*c_isec){ // subdivision
+          if(bestCost + 20.0 < N*c_isec){ // subdivision
             int counts[3] = {0,0,0};
             int Nl = 0, Nr = 0; // number of primitives in left & right;
 
