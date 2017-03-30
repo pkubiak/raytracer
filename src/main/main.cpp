@@ -12,6 +12,8 @@
 #include <rt/groups/kdtree.h>
 #include <rt/materials/dummy.h>
 #include <rt/loaders/obj.h>
+#include <rt/solids/parallelepiped.h>
+#include <rt/solids/mengersponge.h>
 
 #include <rt/lights/pointlight.h>
 
@@ -31,7 +33,7 @@ void makeBox(Group* scene, const Point& aaa, const Vector& forward, const Vector
 }
 
 void renderCornellboxA(float scale, const char* filename) {
-    Image img(400, 400);
+    Image img(300, 300);
     World world;
     KDTree* scene = new KDTree();
     world.scene = scene;
@@ -40,7 +42,7 @@ void renderCornellboxA(float scale, const char* filename) {
 
     DummyMaterial* mat = new DummyMaterial();
     // TODO: Coś się psuje przy ładowaniu obj
-    // loadOBJ(scene, "models/", "dude.obj", nullptr, Vector(2.4, 0.0, 1.2));
+    // loadOBJ(scene, "models/", "armadillo.obj", nullptr, Vector(2.4, 1.0, 1.2));
     // TODO: Co należy robić gdy element nie ma przypisanego materiału?
 
     scene->add(new Quad(Point(000.f,000.f,000.f)*scale, Vector(550.f,000.f,000.f)*scale, Vector(000.f,000.f,560.f)*scale, nullptr, mat)); //floor
@@ -50,21 +52,26 @@ void renderCornellboxA(float scale, const char* filename) {
     scene->add(new Quad(Point(550.f,550.f,000.f)*scale, Vector(000.f,000.f,560.f)*scale, Vector(000.f,-550.f,000.f)*scale, nullptr, mat)); //left wall
 
     //short box
-    makeBox(scene, Point(082.f, 000.1f, 225.f)*scale, Vector(158.f, 000.f, 047.f)*scale, Vector(048.f, 000.f, -160.f)*scale, Vector(000.f, 165.f, 000.f)*scale, nullptr, mat);
+    // makeBox(scene, Point(082.f, 000.1f, 225.f)*scale, Vector(158.f, 000.f, 047.f)*scale, Vector(048.f, 000.f, -160.f)*scale, Vector(000.f, 165.f, 000.f)*scale, nullptr, mat);
 
     //tall box
-    makeBox(scene, Point(265.f, 000.1f, 296.f)*scale, Vector(158.f, 000.f, -049.f)*scale, Vector(049.f, 000.f, 160.f)*scale, Vector(000.f, 330.f, 000.f)*scale, nullptr, mat);
+    // makeBox(scene, Point(265.f, 000.1f, 296.f)*scale, Vector(158.f, 000.f, -049.f)*scale, Vector(049.f, 000.f, 160.f)*scale, Vector(000.f, 330.f, 000.f)*scale, nullptr, mat);
     // scene->add(new Triangle(Point(0,0,0)*scale, Point(550,0,500)*scale, Point(0,0,560)*scale, nullptr, mat));
 
+    scene->add(new MengerSponge(Point(265.f, 000.1f, 296.f)*scale, Vector(158.f, 000.f, -049.f)*scale, Vector(049.f, 000.f, 160.f)*scale, Vector(000.f, 330.f, 000.f)*scale, 5, nullptr, mat));
+
+    scene->add(new MengerSponge(Point(082.f, 000.1f, 225.f)*scale, Vector(158.f, 000.f, 047.f)*scale, Vector(048.f, 000.f, -160.f)*scale, Vector(000.f, 165.f, 000.f)*scale, 5, nullptr, mat));
     scene->setMaterial(mat);
 
     scene->rebuildIndex();
 
     //point light
+    Point p = Point(082.f, 000.1f, 225.f)*scale + Vector(158.f, 000.f, 047.f)*scale*0.5 + Vector(048.f, 000.f, -160.f)*scale*0.5 + Vector(000.f, 165.f, 000.f)*scale*0.5;
+    world.light.push_back(new PointLight(p,RGBColor::rep(4000.0f*scale*scale)));
     world.light.push_back(new PointLight(Point(288*scale,529.99f*scale,279.5f*scale),RGBColor::rep(40000.0f*scale*scale)));
     world.light.push_back(new PointLight(Point(490*scale,329.99f*scale,279.5f*scale),RGBColor(60000.0f*scale*scale,0,0)));
     world.light.push_back(new PointLight(Point(40*scale,329.99f*scale,279.5f*scale),RGBColor(0,60000.0f*scale*scale,0)));
-    // world.light.push_back(new PointLight(Point(220*scale,129.99f*scale,79.5f*scale),RGBColor(0,0,3*6000.0f*scale*scale)));
+    world.light.push_back(new PointLight(Point(220*scale,129.99f*scale,79.5f*scale),RGBColor(0,0,3*6000.0f*scale*scale)));
 
     RayTracingIntegrator integrator(&world);
 
