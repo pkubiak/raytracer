@@ -12,9 +12,6 @@ namespace rt {
 
     float cos_o = dot(normal, outDir)/(normal.length() * outDir.length());
 
-    if(cos_o < 0.0f)
-      cos_o = -cos_o;
-
     float term1 = (eta*eta+kappa*kappa), term2 = 2*eta*cos_o, term3 = cos_o*cos_o;
 
     float r_parallel = 1.0 - 2.0*term2/(term1*term3 + term2 + 1.0);
@@ -22,7 +19,6 @@ namespace rt {
 
     float fr = 0.5*(r_parallel + r_perpendicular);
 
-    // printf("Fr = %f = %f, %f <- %f\n", fr,r_parallel,r_perpendicular, cos_o);
     return Material::SampleReflectance(
       inDir,
       RGBColor::rep(fr)

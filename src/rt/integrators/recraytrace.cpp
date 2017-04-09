@@ -20,15 +20,13 @@ namespace rt {
       RGBColor out = material->getEmission(intersection.local(), intersection.normal(), intersection.ray.d);
 
       Material::Sampling sampling = material->useSampling();
-      // printf("sampling: %d, %d, %d\n", sampling == Material::SAMPLING_NOT_NEEDED, sampling == Material::SAMPLING_SECONDARY, sampling == Material::SAMPLING_ALL);
 
       // cast secondary ray
       if((sampling == Material::SAMPLING_ALL) || (sampling == Material::SAMPLING_SECONDARY)){
-        // printf("Casting\n");
-        // float x = dot(intersection.normalv, intersection.ray.d);
+        float x = dot(intersection.normalv, intersection.ray.d);
 
-        // if(x < 0)
-        //   intersection.normalv = -intersection.normalv;;
+        if(x < 0)
+          intersection.normalv = -intersection.normalv;;
 
         Material::SampleReflectance sample = material->getSampleReflectance(intersection.local(), intersection.normal(), intersection.ray.d);
 

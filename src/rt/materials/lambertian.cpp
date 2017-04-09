@@ -1,6 +1,7 @@
 #include "lambertian.h"
 #include <rt/materials/material.h>
 #include <core/assert.h>
+#include <cmath>
 
 namespace rt {
   LambertianMaterial::LambertianMaterial(Texture* emission_, Texture* diffuse_):
@@ -9,7 +10,7 @@ namespace rt {
   RGBColor LambertianMaterial::getReflectance(const Point& texPoint, const Vector& normal, const Vector& outDir, const Vector& inDir) const {
     float c = dot(normal, inDir)/(normal.length()*inDir.length());
 
-    return c*diffuse->getColor(texPoint)/3.1415926;
+    return c*diffuse->getColor(texPoint)/M_PI;
   }
 
   RGBColor LambertianMaterial::getEmission(const Point& texPoint, const Vector& normal, const Vector& outDir) const {
@@ -17,8 +18,7 @@ namespace rt {
   }
 
   Material::SampleReflectance LambertianMaterial::getSampleReflectance(const Point& texPoint, const Vector& normal, const Vector& outDir) const {
-    // return Sample
-    NOT_IMPLEMENTED;
+    UNREACHABLE;
   }
 
   Material::Sampling LambertianMaterial::useSampling() const {
