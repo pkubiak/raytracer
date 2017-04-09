@@ -21,6 +21,7 @@
 #include <rt/materials/combine.h>
 
 #include <rt/integrators/recraytrace.h>
+#include <rt/integrators/raytrace.h>
 
 using namespace rt;
 
@@ -67,6 +68,7 @@ void prepMaterials2(Material** materials) {
     materials[2] = new LambertianMaterial(blacktex, greentex);
 
     materials[3] = new PhongMaterial(whitetex, 10.0f);
+    // materials[3] = new MirrorMaterial(0.0f, 0.0f);
     materials[4] = new MirrorMaterial(0.0f, 0.0f);
 }
 
@@ -103,7 +105,7 @@ void renderCornellbox(float scale, const char* filename, Material** materials) {
     Material* grey = materials[0];
     Material* leftWallMaterial = materials[1];
     Material* rightWallMaterial = materials[2];
-    
+
     Material* sphereMaterial = materials[3];
     Material* floorMaterial = materials[4];
 
@@ -117,6 +119,7 @@ void renderCornellbox(float scale, const char* filename, Material** materials) {
 
     //tall box
     makeBox(scene, Point(265.f, 000.1f, 296.f)*scale, Vector(158.f, 000.f, -049.f)*scale, Vector(049.f, 000.f, 160.f)*scale, Vector(000.f, 330.f, 000.f)*scale, nullptr, grey);
+    // scene->add(new Sphere(Point(400.0f, 165.0f, 350.0f)*scale, 160.0f*scale, nullptr, sphereMaterial));
 
     //point light
     world.light.push_back(new PointLight(Point((278)*scale,529.99f*scale,(279.5f)*scale),RGBColor::rep(150000.0f*scale*scale)));
@@ -125,6 +128,7 @@ void renderCornellbox(float scale, const char* filename, Material** materials) {
     world.light.push_back(new PointLight(Point(490*scale,159.99f*scale,279.5f*scale),RGBColor(40000.0f*scale*scale,0,0)));
     world.light.push_back(new PointLight(Point(40*scale,159.99f*scale,249.5f*scale),RGBColor(5000.0f*scale*scale,30000.0f*scale*scale,5000.0f*scale*scale)));
 
+    // world.light.push_back(new PointLight(Point(275.0f*scale,275.0f*scale,0*scale),RGBColor::rep(70000.0f*scale*scale)));
     RecursiveRayTracingIntegrator integrator(&world);
 
     Renderer engine(&cam, &integrator);
@@ -145,4 +149,3 @@ int main() {
     delete [] materials;
     return 0;
 }
-

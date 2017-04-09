@@ -43,6 +43,9 @@ float dot(const Vector& a, const Vector& b);
 Vector min(const Vector& a, const Vector& b);
 Vector max(const Vector& a, const Vector& b);
 
+// Odbicie wektora `v` względem płaszczyzny wyznaczanej przez `n`
+Vector reflect(const Vector& n, const Vector& v);
+
 Point operator+(const Point& a, const Vector& b);
 Point operator+(const Vector& a, const Point& b);
 Point operator-(const Point& a, const Vector& b);

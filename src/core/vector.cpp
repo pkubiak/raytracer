@@ -85,6 +85,10 @@ namespace rt {
     );
   }
 
+  Vector reflect(const Vector& n, const Vector& v){
+    return (2.0f*dot(n, v)/n.length())*n - v;
+  }
+
   Point operator+(const Point& a, const Vector& b) {
     return Point(a.x + b.x, a.y + b.y, a.z + b.z);
   }
@@ -100,6 +104,7 @@ namespace rt {
   Point operator*(const Float4& scale, const Point& p) {
     NOT_IMPLEMENTED;
   }
+
 
 
   const float Vector::operator()(int p) const{

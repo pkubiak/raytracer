@@ -13,7 +13,8 @@ namespace rt {
     Intersection intersection = world->scene->intersect(ray);
 
     if(intersection){
-      RGBColor out(0,0,0);
+      // In addition add the emitted light of the material.
+      RGBColor out = intersection.solid->material->getEmission(intersection.uv, intersection.normalv, intersection.ray.d);
 
       for(auto light: world->light){
         auto light_hit = light->getLightHit(intersection.hitPoint());
@@ -35,12 +36,7 @@ namespace rt {
         // Use the irradiance intensity and the material properties to compute the amount of reflected light.
         RGBColor reflected = intersection.solid->material->getReflectance(intersection.uv, -intersection.normalv, intersection.ray.d, light_hit.direction);
 
-        // In addition add the emitted light of the material.
-        RGBColor emmited = intersection.solid->material->getEmission(intersection.uv, intersection.normalv, intersection.ray.d);
-
-        out.r += intensity.r * reflected.r + emmited.r;
-        out.g += intensity.g * reflected.g + emmited.g;
-        out.b += intensity.b * reflected.b + emmited.b;
+        out = out + intensity*reflected;
       }
       return out;
     }else
