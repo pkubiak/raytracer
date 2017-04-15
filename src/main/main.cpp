@@ -8,6 +8,9 @@
 #include <rt/cameras/perspective.h>
 #include <rt/solids/quad.h>
 #include <rt/solids/sphere.h>
+#include <rt/solids/mengersponge.h>
+#include <rt/solids/infiniteplane.h>
+
 #include <rt/groups/simplegroup.h>
 #include <rt/materials/dummy.h>
 
@@ -118,7 +121,8 @@ void renderCornellbox(float scale, const char* filename, Material** materials) {
     scene->add(new Sphere(Point(150.0f, 100.0f, 150.0f)*scale, 99.0f*scale, nullptr, sphereMaterial));
 
     //tall box
-    makeBox(scene, Point(265.f, 000.1f, 296.f)*scale, Vector(158.f, 000.f, -049.f)*scale, Vector(049.f, 000.f, 160.f)*scale, Vector(000.f, 330.f, 000.f)*scale, nullptr, grey);
+    scene->add(new MengerSponge(Point(265.f, 000.1f, 296.f)*scale, Vector(158.f, 000.f, -049.f)*scale, Vector(049.f, 000.f, 160.f)*scale, Vector(000.f, 330.f, 000.f)*scale, 5, nullptr, grey));
+    //makeBox(scene, Point(265.f, 000.1f, 296.f)*scale, Vector(158.f, 000.f, -049.f)*scale, Vector(049.f, 000.f, 160.f)*scale, Vector(000.f, 330.f, 000.f)*scale, nullptr, grey);
     // scene->add(new Sphere(Point(400.0f, 165.0f, 350.0f)*scale, 160.0f*scale, nullptr, sphereMaterial));
 
     //point light
@@ -128,7 +132,7 @@ void renderCornellbox(float scale, const char* filename, Material** materials) {
     world.light.push_back(new PointLight(Point(490*scale,159.99f*scale,279.5f*scale),RGBColor(40000.0f*scale*scale,0,0)));
     world.light.push_back(new PointLight(Point(40*scale,159.99f*scale,249.5f*scale),RGBColor(5000.0f*scale*scale,30000.0f*scale*scale,5000.0f*scale*scale)));
 
-    // world.light.push_back(new PointLight(Point(275.0f*scale,275.0f*scale,0*scale),RGBColor::rep(70000.0f*scale*scale)));
+    world.light.push_back(new PointLight(Point(275.0f*scale,275.0f*scale,0*scale),RGBColor::rep(70000.0f*scale*scale)));
     RecursiveRayTracingIntegrator integrator(&world);
 
     Renderer engine(&cam, &integrator);
@@ -136,16 +140,54 @@ void renderCornellbox(float scale, const char* filename, Material** materials) {
     img.writePNG(filename);
 }
 
+void renderSponge(int depth){
+  // int depth;
+  // scanf("%d", &depth);
+  printf("Depth: %d\n", depth);
+  Image img(2000, 2000);
+  World world;
+  SimpleGroup* scene = new SimpleGroup();
+  world.scene = scene;
 
-int main() {
-    Material** materials = new Material*[5];
-    initTextures();
-    prepMaterials1(materials);
-    renderCornellbox(0.001f, "a5-1.png", materials);
-    prepMaterials2(materials);
-    renderCornellbox(0.001f, "a5-2.png", materials);
-    prepMaterials3(materials);
-    renderCornellbox(0.001f, "a5-3.png", materials);
-    delete [] materials;
+  PerspectiveCamera cam(Point(3, 2, -2), Vector(-0.5, -0.3, 0.5), Vector(0, 1, 0), 0.686f, 0.686f);
+
+  Material *mat = new LambertianMaterial(new ConstantTexture(RGBColor::rep(0.0f)), new ConstantTexture(RGBColor::rep(1.0f)));
+  CombineMaterial* combined = new CombineMaterial();
+  combined->add(mat, 0.33f);
+  combined->add(new MirrorMaterial(2.485, 3.433),0.66f);
+
+  scene->add(new MengerSponge(Point(0, 0, 0), Vector(1, 0, 0), Vector(0, 1, 0), Vector(0, 0, 1), depth, nullptr, mat));
+  // makeBox(scene, Point(0, 0, 0), Vector(1, 0, 0), Vector(0, 1, 0), Vector(0, 0, 1), nullptr, mat);
+  // scene->add(new Sphere(Point(0.5,0.5,0.5), 0.5, nullptr, mat));
+
+  // scene->add(new Quad(Point(000.f,000.f,000.f)*scale, Vector(550.f,000.f,000.f)*scale, Vector(000.f,000.f,560.f)*scale, nullptr, floorMaterial)); //floor
+  scene->add(new InfinitePlane(Point(0,0,0), Vector(0, 1, 0), nullptr, combined));
+
+  world.light.push_back(new PointLight(Point(-2,2,-2),RGBColor(10, 30, 30)));
+  world.light.push_back(new PointLight(Point(-2,2,2),RGBColor(20, 10, 20)));
+  world.light.push_back(new PointLight(Point(3,1,2),RGBColor(30, 30, 10)));
+  world.light.push_back(new PointLight(Point(1.0,1.0,0.0),0.08*RGBColor(0.1, 0.5, 1)));
+  RecursiveRayTracingIntegrator integrator(&world);
+
+  Renderer engine(&cam, &integrator);
+  engine.render(img);
+
+  char name[20];
+  sprintf(name, "snowflake-%d.png", depth);
+  img.writePNG(name);
+}
+
+int main(int argc, char* argv[]) {
+  int d = atoi(argv[1]);
+    // Material** materials = new Material*[5];
+    // initTextures();
+    // prepMaterials1(materials);
+    // renderCornellbox(0.001f, "a5-1.png", materials);
+    // prepMaterials2(materials);
+    // renderCornellbox(0.001f, "a5-2.png", materials);
+    // prepMaterials3(materials);
+    // renderCornellbox(0.001f, "a5-3.png", materials);
+    // delete [] materials;
+    renderSponge(d);
     return 0;
 }
