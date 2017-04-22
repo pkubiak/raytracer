@@ -27,6 +27,11 @@
 using namespace std;
 
 namespace rt{
+  // Traversal cost and intersection cost;
+  float KDTree::c_trav = 1.0;
+  float KDTree::c_isec = 4.0;
+  int KDTree::max_depth = 30;
+
   KDTree::KDTree(): Group(){}
 
   KDTree::~KDTree() {
@@ -47,7 +52,6 @@ namespace rt{
 
   Intersection KDTree::intersect(const Ray& ray, float previousBestDistance) const {
     int ile = 0;
-    // stack<tuple<int, float, float>> S;//node int, node bbox, time_in, time_out
     s_pos = 0;
     pair<float, float> t0t1 = bbox.intersect(ray);
 
@@ -126,14 +130,12 @@ namespace rt{
     return Intersection::failure();
   }
 
-  tuple<int, vector<pair<float, unsigned> >*, BBox, int> S[105];
-  int S_pos;
 
   // Based on: On building fast kd-Trees for Ray Tracing, and on doing that in O(N log N)
   //   by Ingo Wald & Vlastimil Havran
   void KDTree::rebuildIndex(){
-      // Traversal cost and intersection cost;
-      float c_trav = 1.0, c_isec = 4.0;
+      tuple<int, vector<pair<float, unsigned> >*, BBox, int> S[105];
+      int S_pos=0;
 
       // temporary vector used in spliting
       vector<char> tmp;
@@ -189,7 +191,7 @@ namespace rt{
 
         bool done = false;
 
-        if(depth < 30){
+        if(depth < KDTree::max_depth){
           // //Initialize Nl, Np, Nr
           int counts[3][3];//Nl, Np, Nr for each axies
           counts[0][LEFT] = counts[1][LEFT] = counts[2][LEFT] = 0;
@@ -223,11 +225,11 @@ namespace rt{
               float SL = (p-box.min(axe))*(v1+v2)+v1*v2;
               float SR = (box.max(axe)-p)*(v1+v2)+v1*v2;
 
-              float cost_l = (c_trav + c_isec*(SL*(counts[axe][LEFT] + counts[axe][PLANAR]) + SR*counts[axe][RIGHT])/SA);
+              float cost_l = (KDTree::c_trav + KDTree::c_isec*(SL*(counts[axe][LEFT] + counts[axe][PLANAR]) + SR*counts[axe][RIGHT])/SA);
               if((counts[axe][LEFT] + counts[axe][PLANAR]) == 0 || counts[axe][RIGHT] == 0)
                 cost_l *= 0.8;
 
-              float cost_r = (c_trav + c_isec*(SL*counts[axe][LEFT] + SR*(counts[axe][PLANAR] + counts[axe][RIGHT]))/SA);
+              float cost_r = (KDTree::c_trav + KDTree::c_isec*(SL*counts[axe][LEFT] + SR*(counts[axe][PLANAR] + counts[axe][RIGHT]))/SA);
               if(counts[axe][LEFT] == 0 || (counts[axe][PLANAR] + counts[axe][RIGHT]) == 0)
                 cost_r *= 0.8;
 
@@ -245,7 +247,7 @@ namespace rt{
           }
 
 
-          if(bestCost + 20.0 < N*c_isec){ // subdivision
+          if(bestCost < N*KDTree::c_isec){ // subdivision
             int counts[3] = {0,0,0};
             int Nl = 0, Nr = 0; // number of primitives in left & right;
 

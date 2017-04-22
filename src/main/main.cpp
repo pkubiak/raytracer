@@ -177,8 +177,12 @@ void renderSponge(int depth){
   img.writePNG(name);
 }
 
+// #include <main/kdtree_test.cpp>
+
+void main_kdtree_test();
+
 int main(int argc, char* argv[]) {
-  int d = atoi(argv[1]);
+  // int d = atoi(argv[1]);
     // Material** materials = new Material*[5];
     // initTextures();
     // prepMaterials1(materials);
@@ -188,6 +192,7 @@ int main(int argc, char* argv[]) {
     // prepMaterials3(materials);
     // renderCornellbox(0.001f, "a5-3.png", materials);
     // delete [] materials;
-    renderSponge(d);
-    return 0;
+    // renderSponge(d);
+  main_kdtree_test();
+  return 0;
 }

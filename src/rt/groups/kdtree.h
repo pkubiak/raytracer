@@ -30,6 +30,10 @@ namespace rt {
     vector<KDTreeNode*> nodes;
     vector<vector<Primitive*>* > leaves;
 
+    static float c_trav;
+    static float c_isec;
+    static int max_depth;
+    
     KDTree();
     virtual BBox getBounds() const;
     virtual Intersection intersect(const Ray& ray, float previousBestDistance=FLT_MAX) const;
