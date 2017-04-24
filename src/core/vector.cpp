@@ -2,12 +2,13 @@
 #include "assert.h"
 #include "vector.h"
 #include "point.h"
+#include "float4.h"
 
 namespace rt {
   Vector::Vector(float _x, float _y, float _z): x(_x), y(_y), z(_z) {}
 
-  Vector::Vector(const Float4& f4) {
-    NOT_IMPLEMENTED;
+  Vector::Vector(const Float4& f4): x(f4[0]), y(f4[1]), z(f4[2]) {
+    assert(f4[3] == 0.0f);
   }
 
   Vector Vector::rep(float v) {
@@ -102,10 +103,8 @@ namespace rt {
   }
 
   Point operator*(const Float4& scale, const Point& p) {
-    NOT_IMPLEMENTED;
+    return Point(scale[0]*p.x, scale[1]*p.y, scale[2]*p.z);
   }
-
-
 
   const float Vector::operator()(int p) const{
     return *(&x+p);

@@ -26,7 +26,10 @@ public:
     virtual RGBColor getColor(const Point& coord);
     virtual RGBColor getColorDX(const Point& coord);
     virtual RGBColor getColorDY(const Point& coord);
-
+  protected:
+    Image image;
+    BorderHandlingType bh;
+    InterpolationType it;
 };
 
 }

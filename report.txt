@@ -77,3 +77,24 @@ Video scene
     Building KDTree: 111.19s
     Render time: 5218.92s
     Render time per frame: 4.15s
+
+-----------------------------------------------------------
+
+I have performed some tests about parameters used in kd-tree construction, it is
+max_depth - maximal depth of kd-tree, c_trav - traversal cost, c_inter - intersection cost.
+
+This parameters determine where the optimal split plane is and when recursive spliting should
+be stoped.
+
+I have tested SAH with different paramters on simple scene using model of Brigand. Results
+are availabe in files results_1.txt and results_16.txt. In the first case scene was
+cointaining only one instance of model, in the second case there were 16 instances of model.
+
+Conclusions:
+  * When the numer of nodes in kd-tree was resonable then there weren't large differences in
+      rendering time.
+  * Total time was dominated by build_time
+  * Build time increase with increase of max_depth.
+  * Best results:
+    * scene with 1 model -> max_depth = 40, c_trav = 4.25, c_inter = 3.5
+    * scene with 16 models -> max_depth = 30, c_trav = 3.5, c_inter = 4.25

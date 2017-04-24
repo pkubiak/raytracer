@@ -12,6 +12,9 @@
 namespace rt {
 
     class PerlinTexture : public Texture {
+    protected:
+      std::vector<std::pair<float, float> > octaves;
+      RGBColor white, black;
     public:
         PerlinTexture(const RGBColor& white, const RGBColor& black);
         void addOctave(float amplitude, float frequency);

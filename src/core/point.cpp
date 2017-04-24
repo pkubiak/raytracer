@@ -1,12 +1,13 @@
 #include "assert.h"
 #include "point.h"
 #include "vector.h"
+#include "float4.h"
 
 namespace rt {
   Point::Point(float _x, float _y, float _z): x(_x), y(_y), z(_z) {}
 
-  Point::Point(const Float4& f4) {
-    NOT_IMPLEMENTED;
+  Point::Point(const Float4& f4): x(f4[0]), y(f4[1]), z(f4[2]) {
+    assert(f4[3] == 1.0f);
   }
 
   Point Point::rep(float v) {

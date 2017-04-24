@@ -1,5 +1,4 @@
-#ifndef CG1RAYTRACER_FLOAT4_HEADER
-#define CG1RAYTRACER_FLOAT4_HEADER
+#pragma once
 
 #include <core/macros.h>
 
@@ -46,5 +45,3 @@ Float4 min(const Float4& a, const Float4& b);
 Float4 max(const Float4& a, const Float4& b);
 
 }
-
-#endif

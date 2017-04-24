@@ -1,5 +1,4 @@
-#ifndef CG1RAYTRACER_POINT_HEADER
-#define CG1RAYTRACER_POINT_HEADER
+#pragma once
 
 #include <core/macros.h>
 
@@ -32,5 +31,3 @@ namespace rt {
   Point min(const Point& a, const Point& b);
   Point max(const Point& a, const Point& b);
 }
-
-#endif
