@@ -30,6 +30,7 @@ public:
     Image image;
     BorderHandlingType bh;
     InterpolationType it;
+    RGBColor getColor(int x, int y);
 };
 
 }

@@ -22,13 +22,18 @@ namespace rt {
   RGBColor PerlinTexture::getColor(const Point& coord) {
     float v = 0.0;
 
-    for(auto p: octaves)
-      v += p.first * noise(p.second*coord.x, p.second * coord.y, p.second * coord.z);
+    for(auto p: octaves){
+      float fx = floor(p.second * coord.x), fy = floor(p.second * coord.y), fz = floor(p.second * coord.z);
 
-    if(v < -1.0)v = -1.0;
-    if(v > 1.0)v = 1.0;
+      v += p.first * lerp3d(
+        noise(fx, fy, fz), noise(fx+1.0, fy,fz), noise(fx, fy+1.0,fz),noise(fx+1.0,fy+1.0,fz),
+        noise(fx,fy,fz+1.0), noise(fx+1.0, fy, fz+1.0), noise(fx,fy+1.0,fz+1.0), noise(fx+1.0, fy+1.0, fz+1.0),
 
-    return lerp(black, white, 0.5*(v+1.0));
+        p.second*coord.x - fx, p.second*coord.y - fy, p.second * coord.z - fz
+      );
+    }
+
+    return lerp(black, white, 0.5*(v+1.0f));
   }
 
   RGBColor PerlinTexture::getColorDX(const Point& coord) {

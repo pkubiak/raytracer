@@ -14,7 +14,7 @@ namespace rt {
       // printf("%d\n", p);
       auto intersection = p->intersect(ray, previousBestDistance);
       if(intersection){
-        best = Intersection(intersection.distance, intersection.ray, intersection.solid, intersection.normal(), Point());
+        best = Intersection(intersection.distance, intersection.ray, intersection.solid, intersection.normal(), intersection.local());
         previousBestDistance = best.distance;
       }
     }

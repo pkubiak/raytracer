@@ -1,6 +1,7 @@
 #include "flatmaterial.h"
 #include <core/assert.h>
 #include <rt/materials/material.h>
+#include <core/point.h>
 
 namespace rt {
   FlatMaterial::FlatMaterial(Texture* _texture): texture(_texture) {}

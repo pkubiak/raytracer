@@ -68,34 +68,34 @@ tuple<float, float, int, int> kdtree_test(int max_depth, float c_trav, float c_i
 
 void main_kdtree_test(){
   // int max_depth = 30;
-  for(int max_depth = 20; max_depth <= 50; max_depth +=5)
-  for(float c_trav = 0.5; c_trav < 5.0; c_trav += 0.75)
-    for(float c_isec = 0.5; c_isec < 10.0; c_isec += 0.75){
-      bool ok = true;
-
-      printf("%d, %.2f, %.2f, ", max_depth, c_trav, c_isec);
-      float v0=0, v1=0, v2=0, v3=0;
-
-      for(int i=0;i<4;i++){
-        std::future<tuple<float, float,int,int>> future = std::async(std::launch::async, [=](){
-          auto res =  kdtree_test(max_depth, c_trav, c_isec);
-          return res;
-        });
-
-        auto status = future.wait_for(std::chrono::seconds(40));
-
-        if (status == std::future_status::deferred) {
-            printf("deferred\n");ok=false;break;
-        } else if (status == std::future_status::timeout) {
-            printf("timeout\n");ok=false;break;
-        } else if (status == std::future_status::ready) {
-            auto res = future.get();
-            v0+=get<0>(res);v1+=get<1>(res);v2+=get<2>(res);v3+=get<3>(res);
-            // printf("%.2f, %.2f, %.2f, %d, %d\n", get<0>(res), get<1>(res), get<0>(res)+get<1>(res),get<2>(res),get<3>(res));
-        }
-      }
-      if(ok)
-        printf("%.2f, %.2f, %.2f, %.2f, %.2f\n",v0/4.0, v1/4.0, (v0+v1)/4.0, v2/4.0, v3/4.0);
-    }
+  // for(int max_depth = 20; max_depth <= 50; max_depth +=5)
+  // for(float c_trav = 0.5; c_trav < 5.0; c_trav += 0.75)
+  //   for(float c_isec = 0.5; c_isec < 10.0; c_isec += 0.75){
+  //     bool ok = true;
+  //
+  //     printf("%d, %.2f, %.2f, ", max_depth, c_trav, c_isec);
+  //     float v0=0, v1=0, v2=0, v3=0;
+  //
+  //     for(int i=0;i<4;i++){
+  //       std::future<tuple<float, float,int,int>> future = std::async(std::launch::async, [=](){
+  //         auto res =  kdtree_test(max_depth, c_trav, c_isec);
+  //         return res;
+  //       });
+  //
+  //       auto status = future.wait_for(std::chrono::seconds(40));
+  //
+  //       if (status == std::future_status::deferred) {
+  //           printf("deferred\n");ok=false;break;
+  //       } else if (status == std::future_status::timeout) {
+  //           printf("timeout\n");ok=false;break;
+  //       } else if (status == std::future_status::ready) {
+  //           auto res = future.get();
+  //           v0+=get<0>(res);v1+=get<1>(res);v2+=get<2>(res);v3+=get<3>(res);
+  //           // printf("%.2f, %.2f, %.2f, %d, %d\n", get<0>(res), get<1>(res), get<0>(res)+get<1>(res),get<2>(res),get<3>(res));
+  //       }
+  //     }
+  //     if(ok)
+  //       printf("%.2f, %.2f, %.2f, %.2f, %.2f\n",v0/4.0, v1/4.0, (v0+v1)/4.0, v2/4.0, v3/4.0);
+  //   }
 }
 #endif

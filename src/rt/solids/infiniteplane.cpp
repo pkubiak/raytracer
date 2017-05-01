@@ -20,7 +20,7 @@ namespace rt {
     if(t < 0 || t > previousBestDistance)
       return Intersection::failure();
 
-    return Intersection(t, ray, this, normal, Point());
+    return Intersection(t, ray, this, normal, ray.getPoint(t));
   }
 
   BBox InfinitePlane::getBounds() const {

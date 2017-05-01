@@ -1,6 +1,7 @@
 #include "imagetex.h"
 #include <core/assert.h>
 #include <core/point.h>
+#include <core/interpolate.h>
 
 namespace rt {
 
@@ -15,33 +16,56 @@ namespace rt {
     image.readPNG(filename);
   }
 
-  RGBColor ImageTexture::getColor(const Point& coord) {
-    float x = coord.x, y = coord.y;
+  inline void clamp(float& v, float min, float max){
+    v = (v < min ? min : (v > max ? max : v));
+  }
+
+  RGBColor ImageTexture::getColor(int x, int y){//x >= 0, y>=0
+    int h = image.height(), w = image.width();
+
     if(bh == CLAMP){
-      if(x < 0)x = 0;
-      if(x > 1)x = 1;
-      if(y < 0)y = 0;
-      if(y > 1)y = 1;
+      x = (x < 0 ? 0 : (x >= w ? w-1 : x));
+      y = (y < 0 ? 0 : (y >= h ? h-1 : y));
     }else
     if(bh == MIRROR){
-      x = fmod(x, 2.0f);
-      if(x >= 1.0f)x = 2.0f - x;
-      y = fmod(y, 2.0f);
-      if(y >= 1.0f)y = 2.0f - y;
+      x = ((x%(2*w))+2*w)%(2*w);
+      if(x >= w)
+        x = 2*w-1-x;
+
+      y = ((y%(2*h))+2*h)%(2*h);
+      if(y >= h)
+        y = 2*h - 1 - y;
     }else
     if(bh == REPEAT){
-      x = fmod(x, 1.0f);
-      y = fmod(y, 1.0f);
-    }
+      x = ((x%w)+w)%w;
+      y = ((y%h)+h)%h;
+    }else
+      UNREACHABLE;
 
-    float dx = 1.0f/image.width(), dy = 1.0f / image.height();
+    // printf("%d, %d\n",x,y);
+    return image(x, y);
+  }
+
+  RGBColor ImageTexture::getColor(const Point& coord) {
+    float x = coord.x, y = coord.y;
+
+    // TODO: Why not -0.5?
+    x = x*image.width();
+    y = y*image.height();
+
+    int px = floor(x), py = floor(y);
+
+    float scalex = x-px, scaley = y-py;
 
     if(it == NEAREST){
-        return image((int)floor(x / dx), (int)floor(y/dy));
-    }else
-    if(it == BILINEAR){
-      return RGBColor(1.0, 0.5, 0.0);
+      scalex = round(scalex);
+      scaley = round(scaley);
     }
+
+
+    return lerp2d(getColor(px, py), getColor(px+1, py), getColor(px, py+1), getColor(px+1, py+1),
+      scalex, scaley
+    );
   }
 
   RGBColor ImageTexture::getColorDX(const Point& coord) {

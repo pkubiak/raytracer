@@ -8,7 +8,10 @@ namespace rt {
   CheckerboardTexture::CheckerboardTexture(const RGBColor& _white, const RGBColor& _black): white(_white), black(_black) {}
 
   RGBColor CheckerboardTexture::getColor(const Point& coord) {
-    float x = fmod(coord.x, 1.0f);float y = fmod(coord.y, 1.0f); float z = fmod(coord.z, 1.0f);
+    float x = coord.x - floor(coord.x),
+          y = coord.y - floor(coord.y),
+          z = coord.z - floor(coord.z);
+
     if((x < 0.5f ? 0 : 1) ^ (y < 0.5f ? 0 : 1) ^ (z < 0.5f ? 0 : 1))
       return black;
     return white;

@@ -24,7 +24,7 @@ namespace {
 
     Group* imageTexturesBorder() {
 
-        SimpleGroup* scene = new SimpleGroup();      
+        SimpleGroup* scene = new SimpleGroup();
 
         ImageTexture* clampTex = new ImageTexture("models/stones_diffuse.png", ImageTexture::CLAMP, ImageTexture::NEAREST);
         FlatMaterial* clamp = new FlatMaterial(clampTex);
@@ -41,7 +41,7 @@ namespace {
 
     Group* imageTexturesInterpolate() {
 
-        SimpleGroup* scene = new SimpleGroup();      
+        SimpleGroup* scene = new SimpleGroup();
 
         ImageTexture* nearTex = new ImageTexture("models/stones_diffuse.png", ImageTexture::REPEAT, ImageTexture::NEAREST);
         FlatMaterial* near = new FlatMaterial(nearTex);
@@ -99,4 +99,3 @@ int main() {
 
     return 0;
 }
-
