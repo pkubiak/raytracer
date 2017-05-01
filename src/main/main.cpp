@@ -78,24 +78,27 @@ namespace {
 }
 
 
+void example_textures();
+
 int main() {
-    Image img(800, 800);
-    World world;
-    PerspectiveCamera cam(Point(0.1f, -1.5f, 0.225f), Vector(0, 1, -0.5f), Vector(0, 0, 1), 1.0f, 1.0f);
-    RayTracingIntegrator integrator(&world);
-    Renderer engine(&cam, &integrator);
+    // Image img(800, 800);
+    // World world;
+    // PerspectiveCamera cam(Point(0.1f, -1.5f, 0.225f), Vector(0, 1, -0.5f), Vector(0, 0, 1), 1.0f, 1.0f);
+    // RayTracingIntegrator integrator(&world);
+    // Renderer engine(&cam, &integrator);
+    //
+    // world.scene = proceduralTextures();
+    // engine.render(img);
+    // img.writePNG("tx-1.png");
+    //
+    // world.scene = imageTexturesBorder();
+    // engine.render(img);
+    // img.writePNG("tx-2.png");
+    //
+    // world.scene = imageTexturesInterpolate();
+    // engine.render(img);
+    // img.writePNG("tx-3.png");
 
-    world.scene = proceduralTextures();
-    engine.render(img);
-    img.writePNG("tx-1.png");
-
-    world.scene = imageTexturesBorder();
-    engine.render(img);
-    img.writePNG("tx-2.png");
-
-    world.scene = imageTexturesInterpolate();
-    engine.render(img);
-    img.writePNG("tx-3.png");
-
+    example_textures();
     return 0;
 }
