@@ -13,7 +13,8 @@ namespace rt {
 
     if((t < 0) || (t > previousBestDistance) || (((ray.o + t*ray.d)-center).length() > radius))
       return Intersection::failure();
-    return Intersection(t, ray, this, normal, Point());
+      
+    return Intersection(t, ray, this, normal, ray.getPoint(t));
   }
 
   BBox Disc::getBounds() const {

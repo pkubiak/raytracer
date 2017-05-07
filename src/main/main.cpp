@@ -21,6 +21,7 @@
 #include <rt/solids/triangle.h>
 #include <rt/solids/sphere.h>
 #include <rt/integrators/raytrace.h>
+#include <rt/integrators/recraytrace.h>
 
 #include <rt/groups/simplegroup.h>
 #include <rt/coordmappers/plane.h>
@@ -58,24 +59,24 @@ void trynomapper(const char* filename) {
     world.light.push_back(new PointLight(Point(40*scale,159.99f*scale,249.5f*scale),RGBColor(5000.0f*scale*scale,30000.0f*scale*scale,5000.0f*scale*scale)));
 
     //floor
-    scene.add(new Triangle(Point(000.f,000.f,000.f)*scale, Point(550.f,000.f,000.f)*scale, Point(000.f,000.f,560.f)*scale, nullptr, &white)); 
-    scene.add(new Triangle(Point(550.f,000.f,560.f)*scale, Point(550.f,000.f,000.f)*scale, Point(000.f,000.f,560.f)*scale, nullptr, &white)); 
+    scene.add(new Triangle(Point(000.f,000.f,000.f)*scale, Point(550.f,000.f,000.f)*scale, Point(000.f,000.f,560.f)*scale, nullptr, &white));
+    scene.add(new Triangle(Point(550.f,000.f,560.f)*scale, Point(550.f,000.f,000.f)*scale, Point(000.f,000.f,560.f)*scale, nullptr, &white));
 
     //ceiling
-    scene.add(new Triangle(Point(000.f,550.f,000.f)*scale, Point(550.f,550.f,000.f)*scale, Point(000.f,550.f,560.f)*scale, nullptr, &white)); 
-    scene.add(new Triangle(Point(550.f,550.f,560.f)*scale, Point(550.f,550.f,000.f)*scale, Point(000.f,550.f,560.f)*scale, nullptr, &white)); 
+    scene.add(new Triangle(Point(000.f,550.f,000.f)*scale, Point(550.f,550.f,000.f)*scale, Point(000.f,550.f,560.f)*scale, nullptr, &white));
+    scene.add(new Triangle(Point(550.f,550.f,560.f)*scale, Point(550.f,550.f,000.f)*scale, Point(000.f,550.f,560.f)*scale, nullptr, &white));
 
     //back wall
-    scene.add(new Triangle(Point(000.f,000.f,560.f)*scale, Point(550.f,000.f,560.f)*scale, Point(000.f,550.f,560.f)*scale, nullptr, &white)); 
-    scene.add(new Triangle(Point(550.f,550.f,560.f)*scale, Point(550.f,000.f,560.f)*scale, Point(000.f,550.f,560.f)*scale, nullptr, &white)); 
+    scene.add(new Triangle(Point(000.f,000.f,560.f)*scale, Point(550.f,000.f,560.f)*scale, Point(000.f,550.f,560.f)*scale, nullptr, &white));
+    scene.add(new Triangle(Point(550.f,550.f,560.f)*scale, Point(550.f,000.f,560.f)*scale, Point(000.f,550.f,560.f)*scale, nullptr, &white));
 
     //right wall
     scene.add(new Triangle(Point(000.f,000.f,000.f)*scale, Point(000.f,000.f,560.f)*scale, Point(000.f,550.f,000.f)*scale, nullptr, &green));
     scene.add(new Triangle(Point(000.f,550.f,560.f)*scale, Point(000.f,000.f,560.f)*scale, Point(000.f,550.f,000.f)*scale, nullptr, &green));
 
     //left wall
-    scene.add(new Triangle(Point(550.f,000.f,000.f)*scale, Point(550.f,000.f,560.f)*scale, Point(550.f,550.f,000.f)*scale, nullptr, &red)); 
-    scene.add(new Triangle(Point(550.f,550.f,560.f)*scale, Point(550.f,000.f,560.f)*scale, Point(550.f,550.f,000.f)*scale, nullptr, &red)); 
+    scene.add(new Triangle(Point(550.f,000.f,000.f)*scale, Point(550.f,000.f,560.f)*scale, Point(550.f,550.f,000.f)*scale, nullptr, &red));
+    scene.add(new Triangle(Point(550.f,550.f,560.f)*scale, Point(550.f,000.f,560.f)*scale, Point(550.f,550.f,000.f)*scale, nullptr, &red));
 
     //sphere
     scene.add(new Sphere(Point(200.f,100.f,300.f)*scale, 150.f*scale, nullptr, &white));
@@ -97,7 +98,7 @@ void trymapper(const char* filename, CoordMapper* spheremapper1, CoordMapper* sp
 
     PerspectiveCamera cam(Point(278*scale, 273*scale, -800*scale), Vector(0, 0, 1), Vector(0, 1, 0), 0.686f, 0.686f);
 
-    
+
     CheckerboardTexture* redtex = new CheckerboardTexture(RGBColor(.7f,0.1f,0.1f), RGBColor(0.3f,0.1f,0.1f));
     PerlinTexture* greentex = new PerlinTexture(RGBColor(0.f,.7f,0.f), RGBColor(0.0f,0.2f,0.4f));
     greentex->addOctave(1.0f, 3.0f);
@@ -128,23 +129,23 @@ void trymapper(const char* filename, CoordMapper* spheremapper1, CoordMapper* sp
     TriangleMapper* topright = new TriangleMapper(Point(3,3,0), Point(3,0,0), Point(0,3,0));
     //floor
     scene.add(new Triangle(Point(000.f,000.f,000.f)*scale, Point(550.f,000.f,000.f)*scale, Point(000.f,000.f,560.f)*scale, bottomleft, &clamp));
-    scene.add(new Triangle(Point(550.f,000.f,560.f)*scale, Point(550.f,000.f,000.f)*scale, Point(000.f,000.f,560.f)*scale, topright, &clamp)); 
+    scene.add(new Triangle(Point(550.f,000.f,560.f)*scale, Point(550.f,000.f,000.f)*scale, Point(000.f,000.f,560.f)*scale, topright, &clamp));
 
     //ceiling
-    scene.add(new Triangle(Point(000.f,550.f,000.f)*scale, Point(550.f,550.f,000.f)*scale, Point(000.f,550.f,560.f)*scale, bottomleft, &mirror)); 
-    scene.add(new Triangle(Point(550.f,550.f,560.f)*scale, Point(550.f,550.f,000.f)*scale, Point(000.f,550.f,560.f)*scale, topright, &mirror)); 
+    scene.add(new Triangle(Point(000.f,550.f,000.f)*scale, Point(550.f,550.f,000.f)*scale, Point(000.f,550.f,560.f)*scale, bottomleft, &mirror));
+    scene.add(new Triangle(Point(550.f,550.f,560.f)*scale, Point(550.f,550.f,000.f)*scale, Point(000.f,550.f,560.f)*scale, topright, &mirror));
 
     //back wall
-    scene.add(new Triangle(Point(000.f,000.f,560.f)*scale, Point(550.f,000.f,560.f)*scale, Point(000.f,550.f,560.f)*scale, bottomleft, &white)); 
-    scene.add(new Triangle(Point(550.f,550.f,560.f)*scale, Point(550.f,000.f,560.f)*scale, Point(000.f,550.f,560.f)*scale, topright, &white)); 
+    scene.add(new Triangle(Point(000.f,000.f,560.f)*scale, Point(550.f,000.f,560.f)*scale, Point(000.f,550.f,560.f)*scale, bottomleft, &white));
+    scene.add(new Triangle(Point(550.f,550.f,560.f)*scale, Point(550.f,000.f,560.f)*scale, Point(000.f,550.f,560.f)*scale, topright, &white));
 
     //right wall
     scene.add(new Triangle(Point(000.f,000.f,000.f)*scale, Point(000.f,000.f,560.f)*scale, Point(000.f,550.f,000.f)*scale, bottomleft, &green));
     scene.add(new Triangle(Point(000.f,550.f,560.f)*scale, Point(000.f,000.f,560.f)*scale, Point(000.f,550.f,000.f)*scale, topright, &green));
 
     //left wall
-    scene.add(new Triangle(Point(550.f,000.f,000.f)*scale, Point(550.f,000.f,560.f)*scale, Point(550.f,550.f,000.f)*scale, bottomleft, &red)); 
-    scene.add(new Triangle(Point(550.f,550.f,560.f)*scale, Point(550.f,000.f,560.f)*scale, Point(550.f,550.f,000.f)*scale, topright, &red)); 
+    scene.add(new Triangle(Point(550.f,000.f,000.f)*scale, Point(550.f,000.f,560.f)*scale, Point(550.f,550.f,000.f)*scale, bottomleft, &red));
+    scene.add(new Triangle(Point(550.f,550.f,560.f)*scale, Point(550.f,000.f,560.f)*scale, Point(550.f,550.f,000.f)*scale, topright, &red));
 
     //sphere
     scene.add(new Sphere(Point(400.f,450.f,300.f)*scale, 150.f*scale, spheremapper1, &white));

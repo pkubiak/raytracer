@@ -13,7 +13,7 @@ namespace rt {
 
     assert(width >= 2 && height >=2);
 
-    // #pragma omp parallel for schedule(dynamic, 10)
+    #pragma omp parallel for schedule(dynamic, 10)
     for(auto y = 0; y < height; y++){
       for(auto x = 0; x < width; x++){
         float px = -1.0 + 2.0*(x+0.5)/width, py = 1.0 - 2.0*(y+0.5)/height;

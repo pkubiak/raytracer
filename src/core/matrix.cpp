@@ -178,4 +178,3 @@ Matrix Matrix::system(const Vector& e1, const Vector& e2, const Vector& e3) {
 }
 
 }
-

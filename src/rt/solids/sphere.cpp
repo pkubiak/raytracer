@@ -27,12 +27,14 @@ namespace rt {
 
       if(t2 < 0.0){
         if(t1 > 0.0 && t1 <= previousBestDistance){
-          Vector v = (ray.o + t2*ray.d) -center;
-          return Intersection(t1, ray, this, v, Point(v.x, v.y, v.z));
+          Point hit = (ray.o + t1*ray.d);
+          Vector v =  hit - center;
+          return Intersection(t1, ray, this, v, hit);
         }
       }else if(t2 <= previousBestDistance){
-        Vector v = (ray.o + t2*ray.d) -center;
-        return Intersection(t2, ray, this, v, Point(v.x, v.y, v.z));
+        Point hit = (ray.o + t2*ray.d);
+        Vector v = hit - center;
+        return Intersection(t2, ray, this, v, hit);
       }
     }
 

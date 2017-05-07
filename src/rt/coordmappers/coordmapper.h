@@ -1,16 +1,12 @@
-#ifndef CG1RAYTRACER_COORDMAPPERS_COORDMAPPER_HEADER
-#define CG1RAYTRACER_COORDMAPPERS_COORDMAPPER_HEADER
+#pragma once
 
 #include <core/vector.h>
+
 namespace rt {
+  class Intersection;
 
-class Intersection;
-
-class CoordMapper {
-public:
-    virtual Point getCoords(const Intersection& hit) const = 0;
-};
-
+  class CoordMapper {
+    public:
+        virtual Point getCoords(const Intersection& hit) const = 0;
+  };
 }
-
-#endif

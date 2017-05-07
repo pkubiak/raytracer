@@ -6,6 +6,7 @@
 #include <rt/lights/light.h>
 #include <rt/solids/solid.h>
 #include <rt/materials/material.h>
+#include <rt/coordmappers/coordmapper.h>
 
 namespace rt {
 
@@ -13,8 +14,15 @@ namespace rt {
     Intersection intersection = world->scene->intersect(ray);
 
     if(intersection){
+      Point texPoint;
+      if(intersection.solid->texMapper == nullptr)
+        texPoint = intersection.hitPoint();
+      else{
+        texPoint = intersection.solid->texMapper->getCoords(intersection);
+      }
+
       // In addition add the emitted light of the material.
-      RGBColor out = intersection.solid->material->getEmission(intersection.uv, intersection.normalv, intersection.ray.d);
+      RGBColor out = intersection.solid->material->getEmission(texPoint, intersection.normalv, intersection.ray.d);
 
       for(auto light: world->light){
         auto light_hit = light->getLightHit(intersection.hitPoint());
@@ -34,7 +42,7 @@ namespace rt {
         RGBColor intensity = light->getIntensity(light_hit);
 
         // Use the irradiance intensity and the material properties to compute the amount of reflected light.
-        RGBColor reflected = intersection.solid->material->getReflectance(intersection.uv, -intersection.normalv, intersection.ray.d, light_hit.direction);
+        RGBColor reflected = intersection.solid->material->getReflectance(texPoint, -intersection.normalv, intersection.ray.d, light_hit.direction);
 
         out = out + intensity*reflected;
       }

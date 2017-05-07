@@ -7,6 +7,7 @@
 #include <rt/solids/solid.h>
 #include <rt/materials/material.h>
 #include <cstdio>
+#include <rt/coordmappers/coordmapper.h>
 
 namespace rt {
   RGBColor RecursiveRayTracingIntegrator::getRadiance(const Ray& ray, int currentRecursionDepth) const {
@@ -17,7 +18,15 @@ namespace rt {
 
     if(intersection){
       Material *material = intersection.solid->material;
-      RGBColor out = material->getEmission(intersection.local(), intersection.normal(), intersection.ray.d);
+
+      Point texPoint;
+      if(intersection.solid->texMapper == nullptr)
+        texPoint = intersection.hitPoint();
+      else{
+        texPoint = intersection.solid->texMapper->getCoords(intersection);
+      }
+
+      RGBColor out = material->getEmission(texPoint, intersection.normal(), intersection.ray.d);
 
       Material::Sampling sampling = material->useSampling();
 
@@ -26,9 +35,10 @@ namespace rt {
         float x = dot(intersection.normalv, intersection.ray.d);
 
         if(x < 0)
-          intersection.normalv = -intersection.normalv;;
+          intersection.normalv = -intersection.normalv;
 
-        Material::SampleReflectance sample = material->getSampleReflectance(intersection.local(), intersection.normal(), intersection.ray.d);
+
+        Material::SampleReflectance sample = material->getSampleReflectance(texPoint, intersection.normal(), intersection.ray.d);
 
         RGBColor recurence = getRadiance(
           Ray(intersection.ray.o + intersection.ray.d*(intersection.distance-0.00001), -sample.direction),
@@ -58,7 +68,7 @@ namespace rt {
           RGBColor intensity = light->getIntensity(light_hit);
 
           // Use the irradiance intensity and the material properties to compute the amount of reflected light.
-          RGBColor reflected = intersection.solid->material->getReflectance(intersection.uv, -intersection.normalv, intersection.ray.d, light_hit.direction);
+          RGBColor reflected = material->getReflectance(texPoint, -intersection.normalv, intersection.ray.d, light_hit.direction);
 
           out = out + intensity*reflected;
         }
