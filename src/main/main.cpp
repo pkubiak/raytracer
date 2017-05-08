@@ -4,85 +4,42 @@
 #include <core/image.h>
 #include <rt/world.h>
 #include <rt/renderer.h>
-#include <cmath>
-
-#include <rt/cameras/perspective.h>
-
-#include <rt/materials/lambertian.h>
-
-#include <rt/textures/constant.h>
-#include <rt/textures/imagetex.h>
-#include <rt/textures/checkerboard.h>
-#include <rt/textures/perlin.h>
-
-#include <rt/lights/pointlight.h>
-#include <rt/lights/directional.h>
-
-#include <rt/solids/quad.h>
-#include <rt/solids/triangle.h>
-#include <rt/solids/sphere.h>
-#include <rt/integrators/raytrace.h>
-#include <rt/integrators/recraytrace.h>
 
 #include <rt/groups/simplegroup.h>
-#include <rt/coordmappers/plane.h>
-#include <rt/coordmappers/cylindrical.h>
-#include <rt/coordmappers/spherical.h>
-#include <rt/coordmappers/tmapper.h>
+#include <rt/cameras/perspective.h>
+#include <rt/integrators/casting.h>
+#include <rt/integrators/raytrace.h>
+#include <rt/solids/triangle.h>
+#include <rt/solids/striangle.h>
+
+#include <rt/groups/kdtree.h>
+#include <rt/loaders/obj.h>
+#include <rt/lights/pointlight.h>
 
 
 using namespace rt;
 
-void trynomapper(const char* filename) {
-    static const float scale = 0.001f;
+namespace {
+
+    void makeTesselatedSphere(Group*scene, const Point& center, float radius, int vtesselCount, int htesselCount, CoordMapper* texMapper, Material* material);
+    void makeTesselatedSmoothSphere(Group*scene, const Point& center, float radius, int vtesselCount, int htesselCount, CoordMapper* texMapper, Material* material);
+
+}
+
+void renderTesselatedSphere(float scale, const char* filename, bool smooth) {
     Image img(400, 400);
     World world;
     SimpleGroup scene;
     world.scene = &scene;
 
-    PerspectiveCamera cam(Point(278*scale, 273*scale, -800*scale), Vector(0, 0, 1), Vector(0, 1, 0), 0.686f, 0.686f);
+    PerspectiveCamera cam(Point(278*scale, 273*scale, -800*scale), Vector(0, 0.5f, 1), Vector(0.1f, 1, 0), 0.686f, 0.686f);
 
-    ImageTexture* whitetex = new ImageTexture("models/stones_diffuse.png");
-    ConstantTexture* redtex = new ConstantTexture(RGBColor(.7f,0.f,0.f));
-    ConstantTexture* greentex = new ConstantTexture(RGBColor(0.f,.7f,0.f));
-    ConstantTexture* blacktex = new ConstantTexture(RGBColor::rep(0.0f));
-    ConstantTexture* lightsrctex = new ConstantTexture(RGBColor::rep(1.0f));
+    if (smooth)
+        makeTesselatedSmoothSphere(&scene, Point(300.f,720.f,25.f)*scale, 200.f*scale, 8, 16, nullptr, nullptr);
+    else
+        makeTesselatedSphere(&scene, Point(300.f,720.f,25.f)*scale, 200.f*scale, 8, 16, nullptr, nullptr);
 
-    LambertianMaterial white(blacktex, whitetex);
-    LambertianMaterial green(blacktex, greentex);
-    LambertianMaterial red(blacktex, redtex);
-
-    //point light
-    world.light.push_back(new PointLight(Point((278)*scale,429.99f*scale,(279.5f)*scale),RGBColor::rep(100000.0f*scale*scale)));
-    world.light.push_back(new PointLight(Point(478*scale,229.99f*scale,(-59.5f)*scale),RGBColor::rep(150000.0f*scale*scale)));
-
-    world.light.push_back(new PointLight(Point(490*scale,159.99f*scale,279.5f*scale),RGBColor(40000.0f*scale*scale,0,0)));
-    world.light.push_back(new PointLight(Point(40*scale,159.99f*scale,249.5f*scale),RGBColor(5000.0f*scale*scale,30000.0f*scale*scale,5000.0f*scale*scale)));
-
-    //floor
-    scene.add(new Triangle(Point(000.f,000.f,000.f)*scale, Point(550.f,000.f,000.f)*scale, Point(000.f,000.f,560.f)*scale, nullptr, &white));
-    scene.add(new Triangle(Point(550.f,000.f,560.f)*scale, Point(550.f,000.f,000.f)*scale, Point(000.f,000.f,560.f)*scale, nullptr, &white));
-
-    //ceiling
-    scene.add(new Triangle(Point(000.f,550.f,000.f)*scale, Point(550.f,550.f,000.f)*scale, Point(000.f,550.f,560.f)*scale, nullptr, &white));
-    scene.add(new Triangle(Point(550.f,550.f,560.f)*scale, Point(550.f,550.f,000.f)*scale, Point(000.f,550.f,560.f)*scale, nullptr, &white));
-
-    //back wall
-    scene.add(new Triangle(Point(000.f,000.f,560.f)*scale, Point(550.f,000.f,560.f)*scale, Point(000.f,550.f,560.f)*scale, nullptr, &white));
-    scene.add(new Triangle(Point(550.f,550.f,560.f)*scale, Point(550.f,000.f,560.f)*scale, Point(000.f,550.f,560.f)*scale, nullptr, &white));
-
-    //right wall
-    scene.add(new Triangle(Point(000.f,000.f,000.f)*scale, Point(000.f,000.f,560.f)*scale, Point(000.f,550.f,000.f)*scale, nullptr, &green));
-    scene.add(new Triangle(Point(000.f,550.f,560.f)*scale, Point(000.f,000.f,560.f)*scale, Point(000.f,550.f,000.f)*scale, nullptr, &green));
-
-    //left wall
-    scene.add(new Triangle(Point(550.f,000.f,000.f)*scale, Point(550.f,000.f,560.f)*scale, Point(550.f,550.f,000.f)*scale, nullptr, &red));
-    scene.add(new Triangle(Point(550.f,550.f,560.f)*scale, Point(550.f,000.f,560.f)*scale, Point(550.f,550.f,000.f)*scale, nullptr, &red));
-
-    //sphere
-    scene.add(new Sphere(Point(200.f,100.f,300.f)*scale, 150.f*scale, nullptr, &white));
-
-    RayTracingIntegrator integrator(&world);
+    RayCastingIntegrator integrator(&world);
 
     Renderer engine(&cam, &integrator);
     engine.render(img);
@@ -90,133 +47,165 @@ void trynomapper(const char* filename) {
 }
 
 
-void trymapper(const char* filename, CoordMapper* spheremapper1, CoordMapper* spheremapper2) {
-    static const float scale = 0.001f;
-    Image img(400, 400);
-    World world;
-    SimpleGroup scene;
-    world.scene = &scene;
-
-    PerspectiveCamera cam(Point(278*scale, 273*scale, -800*scale), Vector(0, 0, 1), Vector(0, 1, 0), 0.686f, 0.686f);
 
 
-    CheckerboardTexture* redtex = new CheckerboardTexture(RGBColor(.7f,0.1f,0.1f), RGBColor(0.3f,0.1f,0.1f));
-    PerlinTexture* greentex = new PerlinTexture(RGBColor(0.f,.7f,0.f), RGBColor(0.0f,0.2f,0.4f));
-    greentex->addOctave(1.0f, 3.0f);
-    greentex->addOctave(0.5f, 6.0f);
-    greentex->addOctave(0.25f, 12.0f);
-    ConstantTexture* blacktex = new ConstantTexture(RGBColor::rep(0.0f));
-    ConstantTexture* lightsrctex = new ConstantTexture(RGBColor::rep(1.0f));
-
-    ImageTexture* whitetex = new ImageTexture("models/stones_diffuse.png");
-    ImageTexture* clamptex = new ImageTexture("models/stones_diffuse.png", ImageTexture::CLAMP);
-    ImageTexture* mirrtex = new ImageTexture("models/stones_diffuse.png", ImageTexture::MIRROR);
-
-    LambertianMaterial white(blacktex, whitetex);
-    LambertianMaterial clamp(blacktex, clamptex);
-    LambertianMaterial mirror(blacktex, mirrtex);
-    LambertianMaterial green(blacktex, greentex);
-    LambertianMaterial red(blacktex, redtex);
-
-    //point light
-    world.light.push_back(new PointLight(Point((178)*scale,429.99f*scale,(279.5f)*scale),RGBColor::rep(100000.0f*scale*scale)));
-    world.light.push_back(new PointLight(Point(478*scale,229.99f*scale,(-59.5f)*scale),RGBColor::rep(150000.0f*scale*scale)));
-
-    world.light.push_back(new PointLight(Point(490*scale,159.99f*scale,279.5f*scale),RGBColor(40000.0f*scale*scale,0,0)));
-    world.light.push_back(new PointLight(Point(40*scale,159.99f*scale,249.5f*scale),RGBColor(5000.0f*scale*scale,30000.0f*scale*scale,5000.0f*scale*scale)));
 
 
-    TriangleMapper* bottomleft = new TriangleMapper(Point(0,0,0), Point(3,0,0), Point(0,3,0));
-    TriangleMapper* topright = new TriangleMapper(Point(3,3,0), Point(3,0,0), Point(0,3,0));
-    //floor
-    scene.add(new Triangle(Point(000.f,000.f,000.f)*scale, Point(550.f,000.f,000.f)*scale, Point(000.f,000.f,560.f)*scale, bottomleft, &clamp));
-    scene.add(new Triangle(Point(550.f,000.f,560.f)*scale, Point(550.f,000.f,000.f)*scale, Point(000.f,000.f,560.f)*scale, topright, &clamp));
+namespace {
 
-    //ceiling
-    scene.add(new Triangle(Point(000.f,550.f,000.f)*scale, Point(550.f,550.f,000.f)*scale, Point(000.f,550.f,560.f)*scale, bottomleft, &mirror));
-    scene.add(new Triangle(Point(550.f,550.f,560.f)*scale, Point(550.f,550.f,000.f)*scale, Point(000.f,550.f,560.f)*scale, topright, &mirror));
+    void makeTesselatedSphere(Group*scene, const Point& center, float radius, int vtesselCount, int htesselCount, CoordMapper* texMapper, Material* material) {
+        float vangleStep = pi / vtesselCount;
+        float hangleStep = (2*pi) / htesselCount;
 
-    //back wall
-    scene.add(new Triangle(Point(000.f,000.f,560.f)*scale, Point(550.f,000.f,560.f)*scale, Point(000.f,550.f,560.f)*scale, bottomleft, &white));
-    scene.add(new Triangle(Point(550.f,550.f,560.f)*scale, Point(550.f,000.f,560.f)*scale, Point(000.f,550.f,560.f)*scale, topright, &white));
+        //top and bottom cone
+        {
+            Point top = center + Vector(0,0,radius);
+            Point bottom = center - Vector(0,0,radius);
 
-    //right wall
-    scene.add(new Triangle(Point(000.f,000.f,000.f)*scale, Point(000.f,000.f,560.f)*scale, Point(000.f,550.f,000.f)*scale, bottomleft, &green));
-    scene.add(new Triangle(Point(000.f,550.f,560.f)*scale, Point(000.f,000.f,560.f)*scale, Point(000.f,550.f,000.f)*scale, topright, &green));
+            float z = std::cos(vangleStep)*radius;
+            float r = std::sin(vangleStep)*radius;
+            for (int i=0; i<htesselCount; ++i) {
+                Point tleft = center + Vector(
+                    std::sin(i*hangleStep)*r,
+                    std::cos(i*hangleStep)*r,
+                    z);
+                Point tright = center + Vector(
+                    std::sin((i+1)*hangleStep)*r,
+                    std::cos((i+1)*hangleStep)*r,
+                    z);
+                scene->add(new Triangle(top,tleft,tright,texMapper,material));
+                Point bleft = center + Vector(
+                    std::sin(i*hangleStep)*r,
+                    std::cos(i*hangleStep)*r,
+                    -z);
+                Point bright = center + Vector(
+                    std::sin((i+1)*hangleStep)*r,
+                    std::cos((i+1)*hangleStep)*r,
+                    -z);
+                scene->add(new Triangle(bottom,bleft,bright,texMapper,material));
+            }
+        }
 
-    //left wall
-    scene.add(new Triangle(Point(550.f,000.f,000.f)*scale, Point(550.f,000.f,560.f)*scale, Point(550.f,550.f,000.f)*scale, bottomleft, &red));
-    scene.add(new Triangle(Point(550.f,550.f,560.f)*scale, Point(550.f,000.f,560.f)*scale, Point(550.f,550.f,000.f)*scale, topright, &red));
+        //between top and bottom cones
+        for (int y=1; y<vtesselCount-1; ++y) {
+            float topz = std::cos(vangleStep*y)*radius;
+            float bottomz = std::cos(vangleStep*(y+1))*radius;
+            float topr = std::sin(vangleStep*y)*radius;
+            float bottomr = std::sin(vangleStep*(y+1))*radius;
+            for (int x=0; x<htesselCount; ++x) {
+                Point tleft = center + Vector(
+                    std::sin(x*hangleStep)*topr,
+                    std::cos(x*hangleStep)*topr,
+                    topz);
+                Point tright = center + Vector(
+                    std::sin((x+1)*hangleStep)*topr,
+                    std::cos((x+1)*hangleStep)*topr,
+                    topz);
+                Point bleft = center + Vector(
+                    std::sin(x*hangleStep)*bottomr,
+                    std::cos(x*hangleStep)*bottomr,
+                    bottomz);
+                Point bright = center + Vector(
+                    std::sin((x+1)*hangleStep)*bottomr,
+                    std::cos((x+1)*hangleStep)*bottomr,
+                    bottomz);
+                scene->add(new Triangle(tleft,tright,bleft,texMapper,material));
+                scene->add(new Triangle(bleft,bright,tright,texMapper,material));
+            }
+        }
+    }
 
-    //sphere
-    scene.add(new Sphere(Point(400.f,450.f,300.f)*scale, 150.f*scale, spheremapper1, &white));
-    scene.add(new Sphere(Point(200.f,100.f,300.f)*scale, 150.f*scale, spheremapper2, &white));
 
-    RayTracingIntegrator integrator(&world);
+    void makeTesselatedSmoothSphere(Group*scene, const Point& center, float radius, int vtesselCount, int htesselCount, CoordMapper* texMapper, Material* material) {
+        float vangleStep = pi / vtesselCount;
+        float hangleStep = (2*pi) / htesselCount;
 
-    Renderer engine(&cam, &integrator);
-    engine.render(img);
-    img.writePNG(filename);
+        //top and bottom cone
+        {
+            Point top = center + Vector(0,0,radius);
+            Vector topN = Vector(0,0,1);
+            Point bottom = center - Vector(0,0,radius);
+            Vector bottomN = Vector(0,0,-1);
+
+            float z = std::cos(vangleStep)*radius;
+            float r = std::sin(vangleStep)*radius;
+            for (int i=0; i<htesselCount; ++i) {
+                Vector tleftN = Vector(std::sin(i*hangleStep)*r, std::cos(i*hangleStep)*r, z);
+                Point tleft = center + tleftN;
+                tleftN = tleftN.normalize();
+
+                Vector trightN = Vector(std::sin((i+1)*hangleStep)*r, std::cos((i+1)*hangleStep)*r, z);
+                Point tright = center + trightN;
+                trightN = trightN.normalize();
+
+                scene->add(new SmoothTriangle(top,tleft,tright,topN,tleftN,trightN,texMapper,material));
+                Vector bleftN = Vector(std::sin(i*hangleStep)*r, std::cos(i*hangleStep)*r, -z);
+                Point bleft = center + bleftN;
+                bleftN = bleftN.normalize();
+
+                Vector brightN = Vector(std::sin((i+1)*hangleStep)*r, std::cos((i+1)*hangleStep)*r, -z);
+                Point bright = center + brightN;
+                brightN = brightN.normalize();
+                scene->add(new SmoothTriangle(bottom,bleft,bright,bottomN,bleftN,brightN,texMapper,material));
+            }
+        }
+
+        //between top and bottom cones
+        for (int y=1; y<vtesselCount-1; ++y) {
+            float topz = std::cos(vangleStep*y)*radius;
+            float bottomz = std::cos(vangleStep*(y+1))*radius;
+            float topr = std::sin(vangleStep*y)*radius;
+            float bottomr = std::sin(vangleStep*(y+1))*radius;
+            for (int x=0; x<htesselCount; ++x) {
+                Vector tleftN = Vector(std::sin(x*hangleStep)*topr, std::cos(x*hangleStep)*topr, topz);
+                Point tleft = center + tleftN;
+                tleftN = tleftN.normalize();
+
+                Vector trightN = Vector(std::sin((x+1)*hangleStep)*topr, std::cos((x+1)*hangleStep)*topr, topz);
+                Point tright = center + trightN;
+                trightN = trightN.normalize();
+
+                Vector bleftN = Vector(std::sin(x*hangleStep)*bottomr, std::cos(x*hangleStep)*bottomr, bottomz);
+                Point bleft = center + bleftN;
+                bleftN = bleftN.normalize();
+
+                Vector brightN = Vector(std::sin((x+1)*hangleStep)*bottomr, std::cos((x+1)*hangleStep)*bottomr, bottomz);
+                Point bright = center + brightN;
+                brightN = brightN.normalize();
+                scene->add(new SmoothTriangle(tleft,tright,bleft,tleftN,trightN,bleftN,texMapper,material));
+                scene->add(new SmoothTriangle(bleft,bright,tright,bleftN,brightN,trightN,texMapper,material));
+            }
+        }
+    }
+
+    void cow() {
+      Image img(800, 600);
+
+      KDTree* scene = new KDTree();
+
+      loadOBJ(scene, "models/", "cow.obj");
+
+      scene->rebuildIndex();
+      World world;
+      world.scene = scene;
+
+      PerspectiveCamera cam1(Point(-8.85f, -7.85f, 7.0f), Vector(1.0f,1.0f,-0.6f), Vector(0, 0, 1), pi/8, pi/6);
+
+      world.light.push_back(new PointLight(Point(-28.85f, -7.85f, 7.0f),RGBColor::rep(2000.0f)));
+
+      RayTracingIntegrator integrator(&world);
+
+
+      Renderer engine1(&cam1, &integrator);
+      engine1.render(img);
+      img.writePNG("smooth-3.png");
+
+    }
 }
 
-void scene(const char* filename, CoordMapper* spheremapper1, CoordMapper* spheremapper2, float a){
-  static const float scale = 0.001f;
-  Image img(1000, 1000);
-  World world;
-  SimpleGroup scene;
-  world.scene = &scene;
-
-  PerspectiveCamera cam(Point(278*scale, 273*scale, -800*scale), Vector(0, 0, 1), Vector(0, 1, 0), 0.686f, 0.686f);
-
-  ConstantTexture* blacktex = new ConstantTexture(RGBColor::rep(0.0f));
-  ImageTexture* whitetex = new ImageTexture("models/stones_diffuse.png");
-  LambertianMaterial white(blacktex, whitetex);
-
-  //point light
-  // world.light.push_back(new PointLight(Point((178)*scale,429.99f*scale,(279.5f)*scale),RGBColor::rep(100000.0f*scale*scale)));
-  // world.light.push_back(new PointLight(Point(478*scale,229.99f*scale,(-59.5f)*scale),RGBColor::rep(150000.0f*scale*scale)));
-  //
-  // world.light.push_back(new PointLight(Point(490*scale,159.99f*scale,279.5f*scale),RGBColor(40000.0f*scale*scale,0,0)));
-  // world.light.push_back(new PointLight(Point(40*scale,159.99f*scale,249.5f*scale),RGBColor(5000.0f*scale*scale,30000.0f*scale*scale,5000.0f*scale*scale)));
-  float hsq2 = 0.5f / std::sqrt(2.0f);
-  world.light.push_back(new DirectionalLight(Vector(0.0f,0,1), RGBColor::rep(5.0f)));
-  // world.light.push_back(new DirectionalLight(Vector(300,250,), RGBColor::rep(5.0f)));
-  scene.add(new Sphere(Point(300.f,250.f,200.f)*scale, 150.f*scale, spheremapper1, &white));
-  scene.add(new Sphere(Point(300.f,50.f,200.f)*scale, 50.f*scale, spheremapper1, &white));
-  RayTracingIntegrator integrator(&world);
-
-  Renderer engine(&cam, &integrator);
-  engine.render(img);
-  img.writePNG(filename);
-}
 int main() {
-    trynomapper("map-1.png");
-    trymapper("map-2.png",nullptr,nullptr);
-    trymapper("map-3.png",
-        new PlaneCoordMapper(Vector(0.25f,0.0f,0.25f),Vector(-0.25f,0.0f,0.25f)),
-        new PlaneCoordMapper(Vector(0.25f,0.35f,-0.25f),Vector(-0.25f,0.35f,-0.25f))
-        );
-    float hsq2 = 0.5f / std::sqrt(2.0f);
-    // char fn[20];
-    // for(int i=0;i<20;i++){
-    //   sprintf(fn, "map-4-%.2d.png", i);
-    //   printf("%s\n", fn);
-    //   float a = (float)i/20.0 * 2.0 * M_PI;
-    //
-    //   scene(fn,
-    //       new SphericalCoordMapper(Point(0.3f,0.250f,0.200f),Vector(sin(a),cos(a),0.0f),Vector(1,0,0)),
-    //       new CylindricalCoordMapper(Point(.3f,.1f,.3f),Vector(0.0f,hsq2,-hsq2),Vector(cos(a),sin(a),0.0f))
-    //       ,a);
-    //     // break;
-    // }
-
-    trymapper("map-4.png",
-        new CylindricalCoordMapper(Point(.4f,.45f,.3f),Vector(0.0f,hsq2,hsq2),Vector(0.5f,0.0f,0.0f)),
-        new CylindricalCoordMapper(Point(.3f,.1f,.3f),Vector(0.0f,hsq2,-hsq2),Vector(0.5f,0.0f,0.0f))
-        );
-    trymapper("map-5.png",
-        new SphericalCoordMapper(Point(.4f,.45f,.3f),Vector(0.0f,hsq2,hsq2),Vector(0.5f,0.0f,0.0f)),
-        new SphericalCoordMapper(Point(.3f,.1f,.3f),Vector(0.0f,hsq2,-hsq2),Vector(0.5f,0.0f,0.0f))
-        );
+    renderTesselatedSphere(0.01f, "smooth-1.png", false);
+    renderTesselatedSphere(0.01f, "smooth-2.png", true);
+    cow();
     return 0;
 }
