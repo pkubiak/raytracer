@@ -12,7 +12,6 @@ namespace rt {
   Point CylindricalCoordMapper::getCoords(const Intersection& hit) const{
     Point hp = hit.local();
     Vector v = hp - origin;
-
     float y = dot(v, longitudinalAxis)/longitudinalAxis.lensqr();
 
     Vector direction = hp - (origin + y*longitudinalAxis);
@@ -20,7 +19,8 @@ namespace rt {
     Vector vec = polarAxis - longitudinalAxis*(dot(longitudinalAxis, polarAxis)/longitudinalAxis.lensqr());
 
     float cosa = dot(direction, vec)/(vec.length() * direction.length());
-
+    if(cosa<-1.0f)cosa=-1.0f;
+    if(cosa>1.0f)cosa=1.0f;
     float x = std::acos(cosa);
     if(dot(cross(direction, vec), longitudinalAxis) < 0.0)
       x = 2.0*M_PI-x;

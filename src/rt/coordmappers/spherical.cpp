@@ -11,6 +11,7 @@ namespace rt {
   SphericalCoordMapper::SphericalCoordMapper(const Point& _origin, const Vector& _zenith, const Vector& _azimuthRef):
     origin(_origin), zenith(_zenith) {
       azimuthRef = _azimuthRef - zenith*(dot(_zenith, _azimuthRef)/zenith.lensqr());
+
       x_scale = 1.0/_azimuthRef.length();
       y_scale = 1.0/_zenith.length();
     }
@@ -21,12 +22,14 @@ namespace rt {
     float y = dot(zenith, dir)/zenith.lensqr();
 
     Vector vec = dir - y*zenith;
+    float v = dot(azimuthRef, vec)/(azimuthRef.length() * vec.length());
+    if(v < -1.0f)v = -1.0f;
+    if(v > 1.0f)v=1.0f;
 
-    float x = std::acos(dot(azimuthRef, vec)/(azimuthRef.length() * vec.length()));
+    float x = std::acos(v);
 
     if(dot(cross(vec, azimuthRef), zenith) < 0.0)
       x = 2.0*M_PI - x;
-
 
     x = x_scale * (x / (2.0*M_PI));
     y = y_scale * (std::acos(y*zenith.length()/dir.length())/M_PI);

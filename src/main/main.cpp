@@ -16,6 +16,7 @@
 #include <rt/textures/perlin.h>
 
 #include <rt/lights/pointlight.h>
+#include <rt/lights/directional.h>
 
 #include <rt/solids/quad.h>
 #include <rt/solids/triangle.h>
@@ -158,6 +159,36 @@ void trymapper(const char* filename, CoordMapper* spheremapper1, CoordMapper* sp
     img.writePNG(filename);
 }
 
+void scene(const char* filename, CoordMapper* spheremapper1, CoordMapper* spheremapper2, float a){
+  static const float scale = 0.001f;
+  Image img(1000, 1000);
+  World world;
+  SimpleGroup scene;
+  world.scene = &scene;
+
+  PerspectiveCamera cam(Point(278*scale, 273*scale, -800*scale), Vector(0, 0, 1), Vector(0, 1, 0), 0.686f, 0.686f);
+
+  ConstantTexture* blacktex = new ConstantTexture(RGBColor::rep(0.0f));
+  ImageTexture* whitetex = new ImageTexture("models/stones_diffuse.png");
+  LambertianMaterial white(blacktex, whitetex);
+
+  //point light
+  // world.light.push_back(new PointLight(Point((178)*scale,429.99f*scale,(279.5f)*scale),RGBColor::rep(100000.0f*scale*scale)));
+  // world.light.push_back(new PointLight(Point(478*scale,229.99f*scale,(-59.5f)*scale),RGBColor::rep(150000.0f*scale*scale)));
+  //
+  // world.light.push_back(new PointLight(Point(490*scale,159.99f*scale,279.5f*scale),RGBColor(40000.0f*scale*scale,0,0)));
+  // world.light.push_back(new PointLight(Point(40*scale,159.99f*scale,249.5f*scale),RGBColor(5000.0f*scale*scale,30000.0f*scale*scale,5000.0f*scale*scale)));
+  float hsq2 = 0.5f / std::sqrt(2.0f);
+  world.light.push_back(new DirectionalLight(Vector(0.0f,0,1), RGBColor::rep(5.0f)));
+  // world.light.push_back(new DirectionalLight(Vector(300,250,), RGBColor::rep(5.0f)));
+  scene.add(new Sphere(Point(300.f,250.f,200.f)*scale, 150.f*scale, spheremapper1, &white));
+  scene.add(new Sphere(Point(300.f,50.f,200.f)*scale, 50.f*scale, spheremapper1, &white));
+  RayTracingIntegrator integrator(&world);
+
+  Renderer engine(&cam, &integrator);
+  engine.render(img);
+  img.writePNG(filename);
+}
 int main() {
     trynomapper("map-1.png");
     trymapper("map-2.png",nullptr,nullptr);
@@ -166,6 +197,19 @@ int main() {
         new PlaneCoordMapper(Vector(0.25f,0.35f,-0.25f),Vector(-0.25f,0.35f,-0.25f))
         );
     float hsq2 = 0.5f / std::sqrt(2.0f);
+    // char fn[20];
+    // for(int i=0;i<20;i++){
+    //   sprintf(fn, "map-4-%.2d.png", i);
+    //   printf("%s\n", fn);
+    //   float a = (float)i/20.0 * 2.0 * M_PI;
+    //
+    //   scene(fn,
+    //       new SphericalCoordMapper(Point(0.3f,0.250f,0.200f),Vector(sin(a),cos(a),0.0f),Vector(1,0,0)),
+    //       new CylindricalCoordMapper(Point(.3f,.1f,.3f),Vector(0.0f,hsq2,-hsq2),Vector(cos(a),sin(a),0.0f))
+    //       ,a);
+    //     // break;
+    // }
+
     trymapper("map-4.png",
         new CylindricalCoordMapper(Point(.4f,.45f,.3f),Vector(0.0f,hsq2,hsq2),Vector(0.5f,0.0f,0.0f)),
         new CylindricalCoordMapper(Point(.3f,.1f,.3f),Vector(0.0f,hsq2,-hsq2),Vector(0.5f,0.0f,0.0f))
