@@ -1,6 +1,6 @@
 #define DISABLE_COORDMAPPERS
-#define DISABLE_SMOOTH_TRIANGLE
-#define DISABLE_MATERIALS
+// #define DISABLE_SMOOTH_TRIANGLE
+// #define DISABLE_MATERIALS
 
 #include <rt/loaders/obj.h>
 #include <rt/groups/group.h>

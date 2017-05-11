@@ -72,7 +72,7 @@ namespace rt{
 
     while(s_pos > 0){
       std::tie(node_id, t0, t1) = stack[--s_pos];
-      assert(t0<t1);
+      assert(t0<=t1);
       node = nodes[node_id];
 
       if(t0 > previousBestDistance)

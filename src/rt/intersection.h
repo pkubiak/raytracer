@@ -13,7 +13,6 @@ class Intersection {
   public:
     float distance;
     Ray ray;
-    //Solid* solid;
     const Solid* solid;
     Vector normalv;
     Point uv;
