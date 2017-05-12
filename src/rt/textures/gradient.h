@@ -15,11 +15,12 @@ namespace rt {
       };
 
       GradientTexture(vector<pair<float, RGBColor> >,Texture*, ChannelMixer);
+      GradientTexture(vector<pair<float, Texture*> >,Texture*, ChannelMixer);
       virtual RGBColor getColor(const Point& coord);
       virtual RGBColor getColorDX(const Point& coord);
       virtual RGBColor getColorDY(const Point& coord);
     protected:
-      vector<pair<float, RGBColor> > colors;
+      vector<pair<float, Texture*> > textures;
       Texture *base;
       ChannelMixer mixer;
   };
