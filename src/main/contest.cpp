@@ -16,8 +16,8 @@
 using namespace rt;
 
 
-void main_contest(){
-  Camera* cam = new PerspectiveCamera(Point(0.048f, 1.143f, -0.050f), Vector(-0.4f, -0.4f, 0.7f), Vector(0, 1, 0), 0.686f, 0.686f);
+void main_gradient_texture(){
+  Camera* cam = new PerspectiveCamera(Point(0.048f, 4.143f, -0.050f), Vector(-0.4f, -0.4f, 0.7f), Vector(0, 1, 0), 0.686f, 0.686f);
   Image img(1800, 1800);
   World world;
   SimpleGroup* scene = new SimpleGroup();
@@ -30,10 +30,10 @@ void main_contest(){
   // mask.addOctave(0.05, 128);
 
   GradientTexture texture({
-    {0.3, new ImageTexture("textures/grass2.png", ImageTexture::REPEAT, ImageTexture::BILINEAR)},
-    {0.4, new ImageTexture("textures/grass3.png", ImageTexture::REPEAT, ImageTexture::BILINEAR)},
-    {0.5, new ImageTexture("textures/sand.png", ImageTexture::REPEAT, ImageTexture::BILINEAR)},
-    {0.6, new ImageTexture("textures/water.png", ImageTexture::REPEAT, ImageTexture::BILINEAR)}
+    {0.3, new ImageTexture("textures/grass6.png", ImageTexture::REPEAT, ImageTexture::BILINEAR)},
+    // {0.42, new ImageTexture("textures/grass5.png", ImageTexture::REPEAT, ImageTexture::BILINEAR)},
+    {0.56, new ImageTexture("textures/grass7.png", ImageTexture::REPEAT, ImageTexture::BILINEAR)},
+    {0.7, new ImageTexture("textures/grass8.png", ImageTexture::REPEAT, ImageTexture::BILINEAR)}
   }, &mask, GradientTexture::RED);
 
 
@@ -45,6 +45,6 @@ void main_contest(){
 
   Renderer engine(cam, &integrator);
   engine.render(img);
-  // engine.setSamples(9);
+
   img.writePNG("fantasy.png");
 }

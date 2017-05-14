@@ -39,7 +39,7 @@ namespace rt {
     for(int i=0;i<textures.size()-1;i++)
       if(textures[i].first <= t && t < textures[i+1].first){
         t = (t-textures[i].first)/(textures[i+1].first-textures[i].first);
-        t = 1.0f/(1.0f + exp(-8*(t-0.5f)));
+        t = 1.0f/(1.0f + exp(-3*(t-0.5f)));
         // printf("%f %f\n", t,t2);
 
         return lerp(textures[i].second->getColor(coord), textures[i+1].second->getColor(coord), t);
