@@ -41,7 +41,7 @@ namespace rt {
         Material::SampleReflectance sample = material->getSampleReflectance(texPoint, intersection.normal(), intersection.ray.d);
 
         RGBColor recurence = getRadiance(
-          Ray(intersection.ray.o + intersection.ray.d*(intersection.distance-0.00001), -sample.direction),
+          Ray(intersection.ray.o + intersection.ray.d*(intersection.distance-0.0001), -sample.direction),
           currentRecursionDepth - 1
         );
 
@@ -60,7 +60,7 @@ namespace rt {
             intersection.normalv = -intersection.normalv;;
 
           // If no obstacle is found, query the light for the intensity.
-          auto light_intersection = world->scene->intersect(Ray(intersection.ray.o + intersection.ray.d*(intersection.distance-0.00001), -light_hit.direction));
+          auto light_intersection = world->scene->intersect(Ray(intersection.ray.o + intersection.ray.d*(intersection.distance-0.0001), -light_hit.direction));
 
           if(light_intersection && light_intersection.distance < light_hit.distance)
             continue;

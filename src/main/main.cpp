@@ -97,7 +97,7 @@ using namespace rt;
 
 
 void main_gradient_texture();
-
+void main_cooktorrance();
 int main() {
     // ImageTexture* bumptex = new ImageTexture("models/stones_bump.png", ImageTexture::REPEAT, ImageTexture::NEAREST);
     // ImageTexture* bumptexsmooth = new ImageTexture("models/stones_bump.png", ImageTexture::REPEAT, ImageTexture::BILINEAR);
@@ -106,7 +106,8 @@ int main() {
     // bump(cam1, bumptexsmooth, "bump-2.png");
     // Camera* cam2 = new PerspectiveCamera(Point(0.278f, 0.273f, -0.800f), Vector(0, 0, 1), Vector(0, 1, 0), 0.686f, 0.686f);
     // bump(cam2, bumptexsmooth, "bump-3.png");
-    main_gradient_texture();
+    // main_gradient_texture();
+    main_cooktorrance();
 
     return 0;
 }
