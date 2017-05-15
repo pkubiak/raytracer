@@ -69,10 +69,56 @@ namespace rt {
   }
 
   RGBColor ImageTexture::getColorDX(const Point& coord) {
-    NOT_IMPLEMENTED;
+    if(it == NEAREST){
+      float x = coord.x * image.width();
+      float y = coord.y * image.height();
+
+      int px = floor(x);
+      int py = round(y-floor(y))+floor(y);
+
+      return image.width()*(getColor(px+1, py) - getColor(px, py));
+    }else{
+      float x = coord.x, y = coord.y;
+
+      x = x*image.width();
+      y = y*image.height();
+
+      int px = floor(x), py = floor(y);
+
+      float scalex = x-px, scaley = y-py;
+
+      return image.width()*lerp2d(getColor(px+1, py)-getColor(px-1,py), getColor(px+2, py)-getColor(px,py), getColor(px+1, py+1)-getColor(px-1,py+1), getColor(px+2, py+1)-getColor(px, py+1),
+        scalex, scaley
+      );
+    }
+
+    UNREACHABLE;
   }
 
   RGBColor ImageTexture::getColorDY(const Point& coord) {
-    NOT_IMPLEMENTED;
+    if(it == NEAREST){
+      float x = coord.x * image.width();
+      float y = coord.y * image.height();
+
+      int px = round(x-floor(x))+floor(x);
+      int py = floor(y);
+
+      return image.height()*(getColor(px, py+1) - getColor(px, py));
+    }else{
+      float x = coord.x, y = coord.y;
+
+      x = x*image.width();
+      y = y*image.height();
+
+      int px = floor(x), py = floor(y);
+
+      float scalex = x-px, scaley = y-py;
+
+      return image.height()*lerp2d(getColor(px, py+1)-getColor(px,py-1), getColor(px+1, py+1)-getColor(px+1,py-1), getColor(px, py+2)-getColor(px,py), getColor(px+1, py+2)-getColor(px+1,py),
+        scalex, scaley
+      );
+
+    }
+    UNREACHABLE;
   }
 }

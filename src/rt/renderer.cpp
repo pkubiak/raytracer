@@ -34,4 +34,7 @@ namespace rt {
         img(x, y) = func(x, y, width, height);
   }
 
+  void Renderer::setSamples(uint samples){
+    // ?
+  }
 }

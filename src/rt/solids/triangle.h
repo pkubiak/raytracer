@@ -10,13 +10,12 @@
 namespace rt {
 
 class Triangle : public Solid {
-private:
-  Point v1;
-  Point v2;
-  Point v3;
-  Vector normal;
+  public:
+    Point v1;
+    Point v2;
+    Point v3;
+    Vector normal;
 
-public:
     Triangle() {}
     Triangle(Point vertices[3], CoordMapper* texMapper, Material* material);
     Triangle(const Point& v1, const Point& v2, const Point& v3, CoordMapper* texMapper, Material* material);
