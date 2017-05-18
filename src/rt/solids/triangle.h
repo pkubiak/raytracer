@@ -1,5 +1,4 @@
-#ifndef CG1RAYTRACER_SOLIDS_TRIANGLE_HEADER
-#define CG1RAYTRACER_SOLIDS_TRIANGLE_HEADER
+#pragma once
 
 #include <rt/solids/solid.h>
 #include <core/point.h>
@@ -27,5 +26,3 @@ class Triangle : public Solid {
 };
 
 }
-
-#endif

@@ -8,27 +8,28 @@
 #include <cstdio>
 
 namespace rt{
-  BumpMapper::BumpMapper(Triangle* _base, Texture* _bumpmap, const Point& _bv1, const Point& _bv2, const Point& _bv3, float _vscale):
-    base(_base), bumpmap(_bumpmap), bv1(_bv1), bv2(_bv2), bv3(_bv3), vscale(_vscale) {
+  BumpMapper::BumpMapper(Triangle* t, Texture* _bumpmap, const Point& _bv1, const Point& _bv2, const Point& _bv3, float _vscale):
+    base(t), bumpmap(_bumpmap), bv1(_bv1), bv2(_bv2), bv3(_bv3), vscale(_vscale) {
 
     // (1-u-v, u, v)
     // Convert barycentric to texture, Mt*p_bary = p_text
     Matrix Mt = Matrix(
-      Float4(bv2.x - bv1.x, bv3.x - bv1.x, 1, bv1.x),
-      Float4(bv2.y - bv1.y, bv3.y - bv1.y, 1, bv1.y),
-      Float4(0, 0, 1, 0),
-      Float4(0, 0, 0, 1)
+      Float4(bv1.x, bv2.x, bv3.x, 0),
+      Float4(bv1.y, bv2.y, bv3.y, 0),
+      Float4(    0,     0,     0, 1),
+      Float4(    1,     1,     1, 0)
     );
 
+    assert(Mt.det() > 0.00001);
 
     // Convert barycentric to world, Mw*p_bary = p_world
     Matrix Mw = Matrix(
-      Float4(base->v2.x - base->v1.x, base->v3.x - base->v1.x, 1, base->v1.x),
-      Float4(base->v2.y - base->v1.y, base->v3.y - base->v1.y, 1, base->v1.y),
-      Float4(base->v2.z - base->v1.z, base->v3.z - base->v1.z, 1, base->v1.z),
+      Float4(t->v1.x,t->v2.x,t->v3.x,0),
+      Float4(t->v1.y,t->v2.y,t->v3.y,0),
+      Float4(t->v1.z,t->v2.z,t->v3.z,0),
       Float4(0,0,0,1)
     );
-    // assert(Mw!= Matrix::zero());
+    assert(Mw.det() != 0.0);
 
     Matrix Mti = Mt.invert();
     assert(Mti != Matrix::zero());
@@ -36,11 +37,6 @@ namespace rt{
     // Mt.inv * p_text = Mw.inv*p_world
     // (Mw * Mt.inv)*p_text = p_world
     Mt = product(Mw, Mti);
-
-    // printf("Eu = [%f, %f, %f]\n", Mt[0][0], Mt[1][0], Mt[2][0], Mt[3][0]);
-    // printf("Ev = [%f, %f, %f]\n", Mt[0][1], Mt[1][1], Mt[2][1], Mt[3][1]);
-    // printf("Ew = [%f, %f, %f]\n", Mt[0][2], Mt[1][2], Mt[2][2], Mt[3][1]);
-    // printf("\n");
 
     Ex = Vector(Mt[0][0], Mt[1][0], Mt[2][0]);
     Ey = Vector(Mt[0][1], Mt[1][1], Mt[2][1]);
@@ -60,11 +56,12 @@ namespace rt{
         local.x*bv1.z + local.y*bv2.z + local.z*bv3.z
       );
 
-      float dx = vscale*(bumpmap->getColorDX(pt).r);
-      float dy = vscale*(bumpmap->getColorDY(pt).r);
+      float dx = vscale*bumpmap->getColorDX(pt).r;
+      float dy = vscale*bumpmap->getColorDY(pt).r;
 
+      Vector bv = dx*Ex + dy*Ey;
 
-      intr.normalv = (intr.normalv + dy*cross(intr.normalv, Ex) + dx*cross(Ey, intr.normalv)).normalize();
+      intr.normalv = (intr.normalv - bv).normalize();
     }
 
     return intr;

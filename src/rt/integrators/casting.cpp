@@ -12,7 +12,7 @@ namespace rt {
       Vector n = ints.normal();
       Vector d = ray.d;
       float radiance = -dot(n, d)/(n.length()*d.length());
-      
+      // if(radiance<0)radiance=-radiance;
       return RGBColor::rep(radiance);
     }else
       return RGBColor(0, 0, 0);
