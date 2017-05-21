@@ -2,6 +2,7 @@
 #include <core/image.h>
 #include <rt/cameras/perspective.h>
 #include <rt/groups/group.h>
+#include <rt/groups/kdtree.h>
 #include <rt/groups/simplegroup.h>
 #include <rt/primmod/instance.h>
 #include <rt/integrators/casting.h>
@@ -26,7 +27,7 @@ void addTree(Group* g, int trunkTessel, float trunkHeight, float trunkRadius, fl
     for (int i=0; i<trunkTessel; ++i) {
         float angle = i * trunkStep;
         float angleNext = (i+1) * trunkStep;
-        
+
         Point start( trunkRadius * sin(angle), 0.0f, trunkRadius * cos(angle));
         Point end( trunkRadius * sin(angleNext), 0.0f, trunkRadius * cos(angleNext));
         g->add(new Quad(start, end-start, Vector(0.0f, trunkHeight, 0.0f), nullptr, nullptr));
@@ -37,7 +38,7 @@ void addTree(Group* g, int trunkTessel, float trunkHeight, float trunkRadius, fl
     //crown
     for (int i=0; i<crownSteps; ++i) {
         float height = trunkHeight + i * crownHeight / crownSteps;
-        
+
         float x = float(crownSteps-i-1)/crownSteps;
         //float stepRadius = crownRadius * sin(2.5f * sqr(x));
         float stepRadius = crownRadius * sin(x*pi);
@@ -60,11 +61,11 @@ void addTree(Group* g, int trunkTessel, float trunkHeight, float trunkRadius, fl
 int main() {
     Image img(800, 600);
 
-    SimpleGroup* tree = new SimpleGroup();
+    KDTree* tree = new KDTree();
     addTree(tree, 16, 3.0f, 0.5f, 5.0f, 2.0f, 8, 8);
     tree->rebuildIndex();
 
-    SimpleGroup* scene = new SimpleGroup();
+    KDTree* scene = new KDTree();
 
     Instance* normal = new Instance(tree);
     scene->add(normal);
@@ -109,6 +110,5 @@ int main() {
     PerspectiveCamera cam(Point(-3.75f, 20, 40), Vector(0.1, -0.5, -1), Vector(0, 1, 0), pi/4, pi/3);
     Renderer engine(&cam, &integrator);
     engine.render(img);
-    img.writePNG("a7-1.png");
+    img.writePNG("a9-1.png");
 }
-

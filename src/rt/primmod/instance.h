@@ -1,13 +1,15 @@
-#ifndef CG1RAYTRACER_PRIMMOD_INSTANCE_HEADER
-#define CG1RAYTRACER_PRIMMOD_INSTANCE_HEADER
-
+#pragma once
 #include <rt/primitive.h>
+#include <core/matrix.h>
 
 namespace rt {
 
 class Instance : public Primitive {
-public:
+  protected:
+    Matrix m, minv;
+    Primitive* obj;
 
+  public:
     Instance(Primitive* content);
     Primitive* content();
 
@@ -21,9 +23,5 @@ public:
     virtual Intersection intersect(const Ray& ray, float previousBestDistance=FLT_MAX) const;
     virtual void setMaterial(Material* m);
     virtual void setCoordMapper(CoordMapper* cm);
-
-};
-
+  };
 }
-
-#endif
