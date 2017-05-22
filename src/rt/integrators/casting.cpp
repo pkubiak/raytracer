@@ -13,7 +13,9 @@ namespace rt {
       Vector d = ray.d;
       float radiance = -dot(n, d)/(n.length()*d.length());
       // if(radiance<0)radiance=-radiance;
+      // printf("%f\n", radiance);
       return RGBColor::rep(radiance);
+      // return RGBColor(1,0,0);
     }else
       return RGBColor(0, 0, 0);
   }

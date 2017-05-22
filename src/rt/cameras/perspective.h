@@ -1,5 +1,4 @@
-#ifndef CG1RAYTRACER_CAMERAS_PERSPECTIVE_HEADER
-#define CG1RAYTRACER_CAMERAS_PERSPECTIVE_HEADER
+#pragma once
 
 #include <rt/cameras/camera.h>
 #include <core/vector.h>
@@ -26,7 +25,3 @@ namespace rt {
     Vector fx, fy;
   };
 }
-
-
-
-#endif
