@@ -28,12 +28,21 @@ namespace rt {
       if(t2 < 0.0){
         if(t1 > 0.0 && t1 <= previousBestDistance){
           Point hit = (ray.o + t1*ray.d);
-          Vector v =  hit - center;
+          Vector v =  (hit - center).normalize();
+
+          // hit from inside
+          if((center - ray.o).lensqr() < radius*radius)
+            v = -v;
+
           return Intersection(t1, ray, this, v, hit);
         }
       }else if(t2 <= previousBestDistance){
         Point hit = (ray.o + t2*ray.d);
-        Vector v = hit - center;
+        Vector v = (hit - center).normalize();
+
+        if((center- ray.o).lensqr() < radius*radius)
+          v = -v;
+
         return Intersection(t2, ray, this, v, hit);
       }
     }
