@@ -2,7 +2,7 @@
 
 namespace rt {
   ConstantTexture::ConstantTexture(){}
-  ConstantTexture::ConstantTexture(const RGBColor& _color): color(_color.clamp()){}
+  ConstantTexture::ConstantTexture(const RGBColor& color_): color(color_){}
 
   RGBColor ConstantTexture::getColor(const Point& coord){
     return color;

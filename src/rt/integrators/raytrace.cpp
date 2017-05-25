@@ -36,7 +36,7 @@ namespace rt {
         // If no obstacle is found, query the light for the intensity.
         auto light_intersection = world->scene->intersect(Ray(intersection.ray.o + intersection.ray.d*(intersection.distance-0.00001), -light_hit.direction));
 
-        if(light_intersection && light_intersection.distance < light_hit.distance)
+        if(light_intersection && light_hit.distance - light_intersection.distance > 0.0001)
           continue;
 
         RGBColor intensity = light->getIntensity(light_hit);

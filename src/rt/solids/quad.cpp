@@ -3,6 +3,7 @@
 #include "../bbox.h"
 #include "../intersection.h"
 #include "../ray.h"
+#include <core/random.h>
 
 namespace rt {
   Quad::Quad(const Point& _v1, const Vector& _span1, const Vector& _span2, CoordMapper* _texMapper, Material* _material):
@@ -37,7 +38,8 @@ namespace rt {
   }
 
   Point Quad::sample() const {
-    NOT_IMPLEMENTED;
+    float t1 = rt::random(), t2 = rt::random();
+    return v1 + span1*t1 + span2*t2;
   }
 
   float Quad::getArea() const {

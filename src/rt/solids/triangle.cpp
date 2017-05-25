@@ -1,5 +1,6 @@
 #include "triangle.h"
 #include <core/assert.h>
+#include <core/random.h>
 
 namespace rt {
   Triangle::Triangle(Point vertices[3], CoordMapper* _texMapper, Material* _material):
@@ -42,7 +43,16 @@ namespace rt {
   }
 
   Point Triangle::sample() const {
-    NOT_IMPLEMENTED;
+    float t1 = rt::random(), t2 = rt::random();
+    if(t1 + t2 > 1){
+      t1 = 1 - t1; t2 = 1 - t2;
+    }
+
+    return Point(
+      t1*v1.x + t2*v2.x + (1-t1-t2)*v3.x,
+      t1*v1.y + t2*v2.y + (1-t1-t2)*v3.y,
+      t1*v1.z + t2*v2.z + (1-t1-t2)*v3.z
+    );
   }
 
   float Triangle::getArea() const {
